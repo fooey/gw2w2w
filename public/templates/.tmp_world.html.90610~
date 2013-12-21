@@ -1,0 +1,3 @@
+controller: {{name}}<br />
+Language: {{params.lang}}<br />
+World: {{params.world}}<br />

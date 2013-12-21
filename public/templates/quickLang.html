@@ -1,0 +1,5 @@
+<% _.each(langs, function(lang) { %>
+	<li <% if(urlLangSlug === lang.label.toLowerCase()){ print('class="active"') }; %>>
+		<a href="<%= lang.href %>" title="<%= lang.name %>"><%= lang.label %></a>
+	</li>
+<% }); %>

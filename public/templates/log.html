@@ -1,0 +1,17 @@
+<ul class="nav nav-tabs small" id="logTabs">
+	<li class='active'><a data-target="all">All Maps</a></li>	
+	<% _.each(mapTypes, function(mapType) { %>
+		<li><a data-target="<%= mapType.key %>"><%= mapType.label %></a></li>
+	<% }); %>
+</ul>
+
+<ul class="unstyled log">
+	<li class="header clearfix" id="logHeader">
+		<span class="timeStamp">Time</span> 
+		<span class="mapName">Map</span>  
+		<span class="objName"><i class="sprite2small sprite-base-camp"></i> Objective Name</span>
+		<span class="objectiveEvent">Objective Event</span>
+	</li>
+</ul>
+
+<ul class="unstyled log" id="log"></ul>

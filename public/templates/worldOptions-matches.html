@@ -1,0 +1,18 @@
+<h2 class="page-header">Matches</h2>
+
+<div class="row-fluid">
+<% _.each(matches, function(region, ixRegion) { %>
+	<div class="span12">
+		<ul class="small unstyled">
+			<li class="nav-header"><%= ixRegion %> Matches</li>
+			<% _.each(region, function(match) { %>
+				<li class="clearfix small">
+					<a href="<%= match.blueWorld.href %>" class="team blue"> B: <%= match.blueWorld.name %> &nbsp;</a>
+					<a href="<%= match.greenWorld.href %>" class="team green"> G: <%= match.greenWorld.name %> &nbsp;</a>
+					<a href="<%= match.redWorld.href %>" class="team red"> R: <%= match.redWorld.name %></a>
+				</li>
+			<% }); %>
+		</ul>
+		</div>
+<% }); %>
+</div>

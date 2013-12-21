@@ -1,0 +1,14 @@
+<li class="clearfix team <%= curObj.owner.color %> <%= curObj.mapKey %>" data-id="<%= curObj.id %>">
+	<span class="timeStamp"><%= timeStamp %></span> 
+	<span class="mapName"><%= mapName %></span> 
+	<span class="objName">
+		<i class="sprite2small sprite-<%= curObj.owner.color %>-<%= curObj.type %>"></i> 
+		<%= curObj.name %>
+	</span>
+	<span class="objectiveEvent">
+		Claimed by
+		<span class="ownGuild team <%= curObj.owner.color %>">
+			<span class="guild" data-guildid="<%= curObj.guildId %>"><i class="icon-spinner icon-spin"></i></span>
+		</span>
+	</span>
+</li>

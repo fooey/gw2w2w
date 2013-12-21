@@ -1,0 +1,56 @@
+
+
+<div class="row-fluid">
+	
+	<div class="span8">
+		<h2 class="page-header">US Worlds</h2>
+		
+		<% _.each(worlds.US, function(worldLang, lang) { %>
+			<% if(worldLang.length){ %>
+				<ul class="nav nav-list <% if(currentLang === worldLang[0].lang.toLowerCase()){ print('active') }; %>">
+					<li class="nav-header"><%= lang %></li>
+					<% _.each(worldLang, function(world) { %>
+						<li><a href="<%= world.href %>"><%= world.name %></a> </li>
+					<% }); %>
+				</ul>
+			<% } %>
+		<% }); %>
+		
+	</div>
+	<div class="span16">
+		<h2 class="page-header">EU Worlds</h2>
+		
+		<div class="row-fluid">
+			<div class="span12">
+				<ul class="nav nav-list <% if(currentLang === 'en'){ print('active') }; %>">
+					<li class="nav-header">English</li>
+					<% _.each(worlds.EU.English, function(world, lang) { %>
+						<li><a href="<%= world.href %>"><%= world.name %></a> </li>
+					<% }); %>
+				</ul>
+			</div>
+			
+			<div class="span12">
+				<ul class="nav nav-list <% if(currentLang === 'de'){ print('active') }; %>">
+					<li class="nav-header">Deutsch</li>
+					<% _.each(worlds.EU.Deutsch, function(world, lang) { %>
+						<li><a href="<%= world.href %>"><%= world.name %></a></li>
+					<% }); %>
+				</ul>
+				<ul class="nav nav-list <% if(currentLang === 'fr'){ print('active') }; %>">
+					<li class="nav-header">Français</li>
+					<% _.each(worlds.EU.Français, function(world, lang) { %>
+						<li><a href="<%= world.href %>"><%= world.name %></a></li>
+					<% }); %>
+				</ul>
+				<ul class="nav nav-list <% if(currentLang === 'es'){ print('active') }; %>">
+					<li class="nav-header">Español</li>
+					<% _.each(worlds.EU.Español, function(world, lang) { %>
+						<li><a href="<%= world.href %>"><%= world.name %></a></li>
+					<% }); %>
+				</ul>
+			</div>
+		
+		</div>
+	</div>
+</div>

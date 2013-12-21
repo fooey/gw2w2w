@@ -1,0 +1,80 @@
+doctype 5
+html
+	head
+		meta(charset="utf-8")
+
+		title= title
+
+		//-meta(name="viewport", content="width=device-width, initial-scale=1.0")
+
+		link(href="https://d1h9a8s8eodvjz.cloudfront.net/fonts/menomonia/08-02-12/menomonia.css", rel='stylesheet')
+		link(href="https://d1h9a8s8eodvjz.cloudfront.net/fonts/menomonia/08-02-12/menomonia-italic.css", rel='stylesheet')
+
+		link(href='/css/bootstrap.min.css', rel='stylesheet')
+		link(href='/plugins/jquery.pnotify.default.css', rel='stylesheet')
+
+		link(href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css", rel='stylesheet')
+		link(href='/css/custom.css', rel='stylesheet')
+
+
+		script(src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js")
+		script(src="//cdnjs.cloudflare.com/ajax/libs/jquery-color/2.1.2/jquery.color.min.js")
+		script(src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js")
+		script(src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js")
+		script(src="//cdnjs.cloudflare.com/ajax/libs/underscore.string/2.3.0/underscore.string.min.js")
+		script(src="//cdnjs.cloudflare.com/ajax/libs/xregexp/2.0.0/xregexp-all-min.js")
+		script(src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js")
+
+		script(src="/plugins/jquery.pnotify.min.js")
+		script(src="/plugins/gw2emblem-defs.js")
+		script(src="/plugins/gw2emblem.js")
+			
+
+		script(src="/js/lib.js")
+		script(src="/js/app.js")
+		script(src="/js/anet.js")
+
+		script(src="/js/app.model.worlds.js")
+		script(src="/js/app.model.objectives.js")
+
+		script(src="/js/app.obj.scoreboard.js")
+		script(src="/js/app.obj.objectives.js")
+		script(src="/js/app.obj.eventlog.js")
+		script(src="/js/app.obj.guilds.js")
+
+	body
+		.navbar.navbar-static-top
+			.navbar-inner
+				a.brand(href="/"): img(src="/img/logo-96x36.png", width="96", height="36")
+				ul#worldTitle.nav
+				ul#quickNav.nav.pull-right
+					li#indicator.navbarIcon.muted: i.icon-spinner.icon-spin.hide
+					li.divider-vertical
+					li#audioToggle.navbarIcon.muted(data-enabled="false")
+						span.icon-stack
+							i.icon-ban-circle.icon-stack-base.text-error
+							i.icon-volume-up
+					li.divider-vertical
+					li.hide
+						a(href="/" + urlLang)
+							i.icon-globe
+							|  Select World
+					li.divider-vertical.hide
+
+
+
+
+
+	
+		.container: .row-fluid: .span24
+			#content
+				block content
+
+
+		script.
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			ga('create', 'UA-51384-37', 'gw2w2w.com');
+			ga('send', 'pageview');
