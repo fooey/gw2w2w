@@ -1,7 +1,0 @@
-<h1>Select a Language:</h1>
-<ul class="nav nav-list" id="languages">
-	<% _.each(lang, function(name) { %> <li><%= name %></li> <% }); %>
-	<li ng-repeat="lang in langs">
-		<a href="{{lang.href}}" title="{{lang.description}}">{{lang.description}}</a>
-	</li>
-</ul>

@@ -1,6 +1,0 @@
-<h1>Select a Language:</h1>
-<ul class="nav nav-list" ng-controller="LangCtrl">
-	<li ng-repeat="lang in langs">
-		<a href="{{lang.href}}" title="{{lang.description}}">{{lang.description}}</a>
-	</li>
-</ul>
