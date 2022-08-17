@@ -1,9 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 export const Match = () => {
-  const { isLoading, error, data } = useQuery(['match:1-1'], () =>
-    fetch('https://api.guildwars2.com/v2/wvw/matches/1-1').then((res) => res.json())
-  );
+  const { isLoading, error, data } = useQuery([`/v2/wvw/matches/1-1`]);
 
   if (isLoading) return <h1>{'Loading...'}</h1>;
 
