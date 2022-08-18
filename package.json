@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "start": "npm run dev",
     "dev": "vite --port 3000",
     "build": "tsc && vite build",
     "preview": "vite preview"
@@ -13,7 +14,6 @@
     "@tanstack/react-query-devtools": "^4.0.10",
     "axios": "^0.27.2",
     "classnames": "^2.3.1",
-    "jotai": "^1.7.8",
     "lodash": "^4.17.21",
     "luxon": "^3.0.1",
     "react": "^18.2.0",
