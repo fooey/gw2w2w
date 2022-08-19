@@ -20,7 +20,7 @@ export const WorldName: React.FC<IWorldNameProps> = ({ worldId }) => {
       <Link
         className="hover:underline"
         to={{
-          pathname: `/world/${world.name}`,
+          pathname: `/world/${encodeURIComponent(world.name)}`,
           search: `?lang=${lang}`,
         }}
       >
