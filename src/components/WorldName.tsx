@@ -1,31 +1,36 @@
-import { Link } from 'react-router-dom';
+import { Link, LinkProps } from 'react-router-dom';
+import { useWorld, useWorldByName } from '~/queries/worlds';
 import { useLang } from '~/utils/langs';
-import { useWorlds } from '~/utils/queries';
 
-interface IWorldNameProps {
+interface IWorldNameProps extends Partial<LinkProps> {
   worldId?: number;
 }
-export const WorldName: React.FC<IWorldNameProps> = ({ worldId }) => {
+export const WorldIdLink: React.FC<IWorldNameProps> = ({ worldId, ...attrs }) => {
   const lang = useLang();
+  const worldQuery = useWorld(worldId);
 
-  const { isLoading: isLoadingWorlds, error: worldsError, data: worldsData } = useWorlds();
-  if (isLoadingWorlds || !worldsData) return <h2>{'Loading...'}</h2>;
-  if (worldsError) return <h2>{`An error has occurred: ${worldsError}`}</h2>;
-
-  const world = worldsData.find((world) => world.id === worldId);
-  if (!world) return <h2>{`World not found: ${worldId}`}</h2>;
+  if (worldQuery.isLoading) return <span>{'Loading...'}</span>;
+  if (!worldQuery.data) return <span>{`World not found: ${worldId}`}</span>;
 
   return (
-    <h2 className="whitespace-nowrap">
-      <Link
-        className="hover:underline"
-        to={{
-          pathname: `/world/${encodeURIComponent(world.name)}`,
-          search: `?lang=${lang}`,
-        }}
-      >
-        {world.name}
-      </Link>
-    </h2>
+    <Link
+      {...attrs}
+      className="hover:underline"
+      to={{
+        pathname: `/world/${encodeURIComponent(worldQuery.data[lang])}`,
+        search: `?lang=${lang}`,
+      }}
+    >
+      {worldQuery.data[lang]}
+    </Link>
   );
+};
+
+interface IWorldNameProps extends Partial<LinkProps> {
+  worldName?: string;
+}
+export const WorldNameLink: React.FC<IWorldNameProps> = ({ worldName, ...attrs }) => {
+  const worldQuery = useWorldByName(worldName);
+
+  return <WorldIdLink {...attrs} worldId={worldQuery?.data?.id} />;
 };

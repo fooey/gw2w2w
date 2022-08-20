@@ -4,7 +4,7 @@ import { Dictionary, keyBy, map, uniq } from 'lodash';
 import { Duration } from 'luxon';
 import React from 'react';
 import { Layout } from '~/components/layout/Layout';
-import { WorldName } from '~/components/WorldName';
+import { WorldIdLink } from '~/components/WorldName';
 import type { ApiMatchOverview, ApiMatchScores, WvwTeams } from '~/types/api';
 import { useLang } from '~/utils/langs';
 
@@ -118,7 +118,9 @@ const MatchOverview: React.FC<IMatchOverviewProps> = ({ matchId, overviews, scor
                 </div>
                 <div className="text-sm">
                   {teamWorlds.map((worldId) => (
-                    <WorldName key={worldId} worldId={worldId} />
+                    <div key={worldId}>
+                      <WorldIdLink worldId={worldId} />
+                    </div>
                   ))}
                 </div>
               </div>
