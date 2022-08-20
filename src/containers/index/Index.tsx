@@ -3,10 +3,10 @@ import classNames from 'classnames';
 import { Dictionary, keyBy, map, uniq } from 'lodash';
 import { Duration } from 'luxon';
 import React from 'react';
-import { Layout } from '../../components/layout/Layout';
-import { WorldName } from '../../components/WorldName';
-import type { ApiMatchOverview, ApiMatchScores, WvwTeams } from '../../types/api';
-import { useLang } from '../../utils/langs';
+import { Layout } from '~/components/layout/Layout';
+import { WorldName } from '~/components/WorldName';
+import type { ApiMatchOverview, ApiMatchScores, WvwTeams } from '~/types/api';
+import { useLang } from '~/utils/langs';
 
 const teams: WvwTeams[] = ['red', 'blue', 'green'];
 

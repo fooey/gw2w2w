@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { useLang } from '../utils/langs';
-import { useWorlds } from '../utils/queries';
+import { useLang } from '~/utils/langs';
+import { useWorlds } from '~/utils/queries';
 
 interface IWorldNameProps {
   worldId?: number;

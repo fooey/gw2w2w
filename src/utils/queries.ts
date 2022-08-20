@@ -1,8 +1,8 @@
 import { QueryFunction, QueryKey, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Duration } from 'luxon';
-import { ApiWorld } from '../types/api';
-import { useLang } from './langs';
+import { ApiWorld } from '~/types/api';
+import { useLang } from '~/utils/langs';
 
 // const { API_KEY } = import.meta.env;
 

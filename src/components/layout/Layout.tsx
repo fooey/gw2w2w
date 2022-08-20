@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 import ClickAwayListener from 'react-click-away-listener';
 import { MdChevronRight } from 'react-icons/md';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
-import { Footer } from '../../components/layout/Footer';
-import type { ApiLang } from '../../types/api';
-import { flags, langs } from '../../utils/langs';
-import { useWorlds } from '../../utils/queries';
-import { WorldName } from '../WorldName';
+import { Footer } from '~/components/layout/Footer';
+import { WorldName } from '~/components/WorldName';
+import type { ApiLang } from '~/types/api';
+import { flags, langs } from '~/utils/langs';
+import { useWorlds } from '~/utils/queries';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [searchParams, setSearchParams] = useSearchParams();

@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import { Layout } from '../../components/layout/Layout';
-import { WorldName } from '../../components/WorldName';
-import { useWorlds } from '../../utils/queries';
+import { Layout } from '~/components/layout/Layout';
+import { WorldName } from '~/components/WorldName';
+import { useWorlds } from '~/utils/queries';
 
 export const World = () => {
   const params = useParams();

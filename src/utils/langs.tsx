@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router-dom';
-import { ApiLang } from '../types/api';
+import { ApiLang } from '~/types/api';
 
 export const langs: ApiLang[] = ['en', 'es', 'de', 'fr', 'zh'];
 export const flags = ['🇺🇸', '🇪🇸', '🇩🇪', '🇫🇷', '🇨🇳'];
