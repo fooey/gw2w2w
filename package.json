@@ -7,9 +7,9 @@
     "start": "npm run dev",
     "dev": "vite --port 3000",
     "publish": "npm run build:version && npm run build && npm run build:deploy",
-    "build": "node scripts/build.cjs && tsc && vite build",
+    "build": "tsc && vite build",
     "preview": "vite preview",
-    "build:version": "npm version patch && git push --follow-tags",
+    "build:version": "npm version patch -commit-hooks=false && node scripts/build.cjs && git commit package.json package-lock.json && git push --follow-tags",
     "build:deploy": "wrangler pages publish dist --project-name gw2w2w"
   },
   "dependencies": {
@@ -42,5 +42,5 @@
     "vite": "^3.0.7",
     "wrangler": "^2.0.26"
   },
-  "buildDate": "2022-08-19T21:16:14.469-06:00"
+  "buildDate": "2022-08-19T21:18:42.719-06:00"
 }
