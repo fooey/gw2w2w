@@ -8,7 +8,7 @@ import { WorldIdLink } from '~/components/WorldName';
 import type { ApiMatchOverview, ApiMatchScores, WvwTeams } from '~/types/api';
 import { useLang } from '~/utils/langs';
 
-const teams: WvwTeams[] = ['red', 'blue', 'green'];
+const teams: WvwTeams[] = ['Red', 'Blue', 'Green'];
 
 export const Index = () => {
   // const matchNumbers = uniq(map(matches, 'number')).sort();
@@ -89,7 +89,7 @@ const MatchOverview: React.FC<IMatchOverviewProps> = ({ matchId, overviews, scor
   const matchScores = scores[matchId];
   const worldsByTeams = matchOverview.all_worlds;
 
-  const orderedScores = [matchScores.scores.red, matchScores.scores.blue, matchScores.scores.green].sort().reverse();
+  const orderedScores = [matchScores.scores.Red, matchScores.scores.Blue, matchScores.scores.Green].sort().reverse();
   const uniqueScores = uniq(orderedScores);
 
   return (
@@ -104,9 +104,9 @@ const MatchOverview: React.FC<IMatchOverviewProps> = ({ matchId, overviews, scor
             <td className="align-top">
               <div
                 className={classNames(`flex flex-col gap-1 py-2 px-4`, {
-                  'text-green-900': teamColor === 'green',
-                  'text-red-900': teamColor === 'red',
-                  'text-blue-900': teamColor === 'blue',
+                  'text-green-900': teamColor === 'Green',
+                  'text-red-900': teamColor === 'Red',
+                  'text-blue-900': teamColor === 'Blue',
                 })}
               >
                 <div
