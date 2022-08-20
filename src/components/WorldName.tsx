@@ -8,7 +8,7 @@ interface IWorldNameProps {
 export const WorldName: React.FC<IWorldNameProps> = ({ worldId }) => {
   const lang = useLang();
 
-  const { isLoading: isLoadingWorlds, error: worldsError, data: worldsData } = useWorlds(lang);
+  const { isLoading: isLoadingWorlds, error: worldsError, data: worldsData } = useWorlds();
   if (isLoadingWorlds || !worldsData) return <h2>{'Loading...'}</h2>;
   if (worldsError) return <h2>{`An error has occurred: ${worldsError}`}</h2>;
 
