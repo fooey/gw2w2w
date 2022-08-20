@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { map } from 'lodash';
 import React, { useState } from 'react';
 import ClickAwayListener from 'react-click-away-listener';
-import { MdChevronRight } from 'react-icons/md';
+import { MdChevronRight, MdHome } from 'react-icons/md';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { Footer } from '~/components/layout/Footer';
 import { useWorlds } from '~/queries/worlds';
@@ -28,37 +28,29 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 pathname: '/',
                 search: `?lang=${userLanguage}`,
               }}
-              reloadDocument
+              className="flex flex-row items-center gap-4"
             >
-              gw2w2w.com
+              <MdHome className="text-4xl" />
             </Link>
           </h1>
-          <h2 className="font-extralight">
-            <Link
-              to={{
-                pathname: '/',
-                search: `?lang=${userLanguage}`,
-              }}
-            >
-              Matches Overview
-            </Link>
-          </h2>
-          <WorldsPicker />
         </div>
-        <aside className="flex h-8 select-none items-center justify-between gap-2 px-4 text-2xl">
-          {langs.map((lang) => (
-            <a
-              key={lang}
-              className={classNames('block flex-none cursor-pointer text-2xl leading-none hover:drop-shadow-lg', {
-                'drop-shadow-md': lang === userLanguage,
-                'text-3xl': lang === userLanguage,
-              })}
-              onClick={() => setSearchParams({ lang })}
-              title={lang}
-            >
-              {flags[langs.indexOf(lang)]}
-            </a>
-          ))}
+        <aside className="flex items-center gap-8">
+          <div className="flex h-8 select-none items-center gap-2 text-2xl">
+            {langs.map((lang) => (
+              <a
+                key={lang}
+                className={classNames('block flex-none cursor-pointer text-2xl leading-none hover:drop-shadow-lg', {
+                  'drop-shadow-md': lang === userLanguage,
+                  'text-3xl': lang === userLanguage,
+                })}
+                onClick={() => setSearchParams({ lang })}
+                title={lang}
+              >
+                {flags[langs.indexOf(lang)]}
+              </a>
+            ))}
+          </div>
+          <WorldsPicker />
         </aside>
       </header>
       {children}
@@ -85,14 +77,14 @@ const WorldsPicker = () => {
           aria-haspopup="true"
           onClick={() => setShowList(!showList)}
         >
-          <div>Select a World</div>
+          <div>Worlds</div>
           <MdChevronRight className="rotate-90 text-xl" />
         </button>
       </div>
       {showList && (
         <ClickAwayListener onClickAway={() => setShowList(false)}>
           <div
-            className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+            className="absolute left-0 mt-2 w-56 origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
             role="menu"
             aria-orientation="vertical"
             aria-labelledby="menu-button"

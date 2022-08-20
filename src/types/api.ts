@@ -1,5 +1,5 @@
 export type ApiLang = 'en' | 'es' | 'de' | 'fr' | 'zh';
-export type WvwTeams = 'Red' | 'Blue' | 'Green' | 'Neutral';
+export type WvwTeams = 'red' | 'blue' | 'green' | 'neutral';
 export type WvwMaps = 'Center' | 'RedHome' | 'BlueHome' | 'GreenHome';
 export type WvwObjectiveTypes = 'Spawn' | 'Tower' | 'Camp' | 'Castle' | 'Mercenary' | 'Keep' | 'Ruins';
 

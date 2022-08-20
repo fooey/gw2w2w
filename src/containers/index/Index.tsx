@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import classNames from 'classnames';
-import { Dictionary, keyBy, map, uniq } from 'lodash';
+import { Dictionary, keyBy, map, values } from 'lodash';
 import { Duration } from 'luxon';
 import React from 'react';
 import { Layout } from '~/components/layout/Layout';
@@ -8,7 +8,8 @@ import { WorldIdLink } from '~/components/WorldName';
 import type { ApiMatchOverview, ApiMatchScores, WvwTeams } from '~/types/api';
 import { useLang } from '~/utils/langs';
 
-const teams: WvwTeams[] = ['Red', 'Blue', 'Green'];
+const teams: WvwTeams[] = ['red', 'blue', 'green'];
+const regions = ['1', '2'];
 
 export const Index = () => {
   // const matchNumbers = uniq(map(matches, 'number')).sort();
@@ -16,7 +17,7 @@ export const Index = () => {
   return (
     <Layout>
       <main className="flex-auto">
-        <section className="bg-neutral mx-auto flex w-fit flex-col gap-4 rounded border bg-white py-4 px-8 shadow">
+        <section className="bg-neutral mx-auto flex w-fit flex-col gap-2 ">
           <MatchOverviews />
         </section>
       </main>
@@ -51,29 +52,25 @@ const MatchOverviews: React.FC = () => {
   const scores = keyBy(scoresData, 'id');
 
   return (
-    <table>
-      <tbody>
-        {matchIds.map((matchId, index) => {
-          const isNewRegion = index > 0 && matchId.split('-')[0] !== matchIds[index - 1].split('-')[0];
-
-          return (
-            <React.Fragment key={matchId}>
-              {isNewRegion ? (
-                <tr>
-                  <th colSpan={6} className="py-4">
-                    <hr />
-                  </th>
-                </tr>
-              ) : null}
-
-              <tr key={matchId} className={`even:bg-slate-50`}>
-                <MatchOverview key={matchId} matchId={matchId} overviews={overviews} scores={scores} />
-              </tr>
-            </React.Fragment>
-          );
-        })}
-      </tbody>
-    </table>
+    <div className="flex flex-col gap-4 xl:flex-row">
+      {regions.map((region) => {
+        return (
+          <div key={region} className="flex flex-col gap-4">
+            {matchIds
+              .filter((matchId) => matchId.startsWith(region))
+              .map((matchId, index) => {
+                return (
+                  <React.Fragment key={matchId}>
+                    <div className={`grid grid-cols-1 gap-4 rounded-lg bg-white p-4 shadow md:grid-cols-3`}>
+                      <MatchOverview key={matchId} matchId={matchId} overviews={overviews} scores={scores} />
+                    </div>
+                  </React.Fragment>
+                );
+              })}
+          </div>
+        );
+      })}
+    </div>
   );
 };
 
@@ -85,46 +82,46 @@ interface IMatchOverviewProps {
 const MatchOverview: React.FC<IMatchOverviewProps> = ({ matchId, overviews, scores }) => {
   const lang = useLang();
 
+  Object.freeze(scores);
+
   const matchOverview = overviews[matchId];
   const matchScores = scores[matchId];
   const worldsByTeams = matchOverview.all_worlds;
 
-  const orderedScores = [matchScores.scores.Red, matchScores.scores.Blue, matchScores.scores.Green].sort().reverse();
-  const uniqueScores = uniq(orderedScores);
+  const scoreVals = values(matchScores.scores);
+  const sorted = scoreVals.sort();
 
   return (
     <>
       {teams.map((teamColor) => {
         const teamWorlds = worldsByTeams[teamColor].filter((id) => id < 10000);
         const teamScore = matchScores.scores[teamColor];
-        const rank = uniqueScores.indexOf(teamScore) + 1;
+        const rank = sorted.indexOf(teamScore);
 
         return (
           <React.Fragment key={`${matchId}:${teamColor}`}>
-            <td className="align-top">
+            <div
+              className={classNames(`flex flex-col gap-1 text-center text-sm`, {
+                'text-green-900': teamColor === 'green',
+                'text-red-900': teamColor === 'red',
+                'text-blue-900': teamColor === 'blue',
+              })}
+            >
               <div
-                className={classNames(`flex flex-col gap-1 py-2 px-4`, {
-                  'text-green-900': teamColor === 'Green',
-                  'text-red-900': teamColor === 'Red',
-                  'text-blue-900': teamColor === 'Blue',
+                className={classNames(`py-1 text-3xl font-extralight`, {
+                  '': rank === 1,
                 })}
               >
-                <div
-                  className={classNames(`text-xl`, {
-                    'font-bold': rank === 1,
-                  })}
-                >
-                  {teamScore.toLocaleString(lang, {})}
-                </div>
-                <div className="text-sm">
-                  {teamWorlds.map((worldId) => (
-                    <div key={worldId}>
-                      <WorldIdLink worldId={worldId} />
-                    </div>
-                  ))}
-                </div>
+                {teamScore.toLocaleString(lang)}
               </div>
-            </td>
+              <>
+                {teamWorlds.map((worldId) => (
+                  <div key={worldId} className="whitespace-nowrap">
+                    <WorldIdLink worldId={worldId} />
+                  </div>
+                ))}
+              </>
+            </div>
           </React.Fragment>
         );
       })}
