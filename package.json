@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run dev",
     "dev": "vite --port 3000",
-    "publish": "npm run build && npm run build:version && npm run build:deploy",
+    "publish": "npm run build:version && npm run build && npm run build:deploy",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "build:version": "npm version patch && git push --follow-tags",
