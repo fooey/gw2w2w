@@ -9,7 +9,7 @@
     "publish": "npm run build:version && npm run build && npm run build:deploy",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "build:version": "npm version patch -commit-hooks=false && node scripts/build.cjs && git commit package.json package-lock.json && git push --follow-tags",
+    "build:version": "npm version patch -commit-hooks=false && node scripts/build.cjs && git commit -m \"version bump\" package.json package-lock.json && git push --follow-tags",
     "build:deploy": "wrangler pages publish dist --project-name gw2w2w"
   },
   "dependencies": {
