@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { find, keyBy, keys, reduce } from 'lodash';
 import { Duration } from 'luxon';
-import { ApiWorld } from '~/types/api';
+import { ApiRegions, ApiWorld } from '~/types/api';
 
 export type WorldDict = Record<number, WorldDictItem>;
 export type WorldDictItem = {
   id: number;
+  region: ApiRegions;
   en: string;
   es: string;
   de: string;
@@ -46,8 +47,10 @@ export const useWorlds = () => {
     data = reduce(
       worldIds,
       (acc, id) => {
+        const [region] = id[0];
         const worldAgg: WorldDictItem = {
           id: Number(id),
+          region: region as ApiRegions,
           en: enWorlds[id].name,
           es: esWorlds[id].name,
           de: deWorlds[id].name,

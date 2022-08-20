@@ -1,12 +1,12 @@
 import classNames from 'classnames';
-import { map } from 'lodash';
+import { filter, map } from 'lodash';
 import React, { useState } from 'react';
 import ClickAwayListener from 'react-click-away-listener';
 import { MdChevronRight, MdHome } from 'react-icons/md';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { Footer } from '~/components/layout/Footer';
 import { useWorlds } from '~/queries/worlds';
-import type { ApiLang } from '~/types/api';
+import type { ApiLang, ApiRegions } from '~/types/api';
 import { flags, langs, useLang } from '~/utils/langs';
 import { WorldNameLink } from '../WorldName';
 
@@ -33,8 +33,12 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
               <MdHome className="text-4xl" />
             </Link>
           </h1>
+          <div className="flex flex-row items-center gap-2">
+            <WorldsPicker region={'1'} />
+            <WorldsPicker region={'2'} />
+          </div>
         </div>
-        <aside className="flex items-center gap-8">
+        <aside className="flex items-center gap-8 px-4">
           <div className="flex h-8 select-none items-center gap-2 text-2xl">
             {langs.map((lang) => (
               <a
@@ -50,7 +54,6 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
               </a>
             ))}
           </div>
-          <WorldsPicker />
         </aside>
       </header>
       {children}
@@ -59,47 +62,53 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   );
 };
 
-const WorldsPicker = () => {
+interface IWorldsPickerProps {
+  region: ApiRegions;
+}
+const WorldsPicker: React.FC<IWorldsPickerProps> = ({ region }) => {
   const lang = useLang();
   const [showList, setShowList] = useState(false);
   const worlds = useWorlds();
-  const langWorlds = map(worlds.data, lang);
+  const regionWorlds = filter(worlds.data, { region });
+  console.log(`🚀 ~ file: Layout.tsx ~ line 71 ~ regionWorlds`, regionWorlds, worlds.data);
+  const langWorlds = map(regionWorlds, lang);
   const sortedWorlds = langWorlds.sort((a, b) => a.localeCompare(b));
 
   return (
-    <div className="relative inline-block text-left">
-      <div>
-        <button
-          type="button"
-          className="inline-flex w-full justify-center gap-4 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm"
-          id="menu-button"
-          aria-expanded="true"
-          aria-haspopup="true"
-          onClick={() => setShowList(!showList)}
-        >
-          <div>Worlds</div>
-          <MdChevronRight className="rotate-90 text-xl" />
-        </button>
-      </div>
-      {showList && (
-        <ClickAwayListener onClickAway={() => setShowList(false)}>
-          <div
-            className="absolute left-0 mt-2 w-56 origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-            role="menu"
-            aria-orientation="vertical"
-            aria-labelledby="menu-button"
-            tabIndex={-1}
+    <ClickAwayListener onClickAway={() => setShowList(false)}>
+      <div className="relative inline-block text-left">
+        <div>
+          <button
+            type="button"
+            className="inline-flex w-full justify-center gap-4 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm"
+            id="menu-button"
+            onClick={() => setShowList(!showList)}
           >
-            <ul className="my-1 max-h-72 overflow-scroll py-1">
-              {sortedWorlds.map((worldName, ixWorld) => (
-                <li key={worldName} className="block px-4 py-2 text-sm text-gray-700">
-                  <WorldNameLink worldName={worldName} onClick={() => setShowList(false)} />
-                </li>
-              ))}
-            </ul>
-          </div>
-        </ClickAwayListener>
-      )}
-    </div>
+            <div>
+              {region === '1' ? 'NA' : null}
+              {region === '2' ? 'EU' : null}
+            </div>
+            <MdChevronRight className="rotate-90 text-xl" />
+          </button>
+        </div>
+        <div
+          className={classNames(
+            `absolute left-0 mt-2 w-56 origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition-all focus:outline-none`,
+            {
+              'scale-y-0 opacity-0': !showList,
+              'scale-y-100 opacity-100': showList,
+            }
+          )}
+        >
+          <ul className="my-1 max-h-72 overflow-scroll py-1">
+            {sortedWorlds.map((worldName, ixWorld) => (
+              <li key={worldName} className="block px-4 py-2 text-sm text-gray-700">
+                <WorldNameLink worldName={worldName} onClick={() => setShowList(false)} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </ClickAwayListener>
   );
 };

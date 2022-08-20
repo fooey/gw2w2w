@@ -1,19 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
 import classNames from 'classnames';
-import { Dictionary, keyBy, map, values } from 'lodash';
+import { Dictionary, keyBy, keys } from 'lodash';
 import { Duration } from 'luxon';
 import React from 'react';
 import { Layout } from '~/components/layout/Layout';
 import { WorldIdLink } from '~/components/WorldName';
-import type { ApiMatchOverview, ApiMatchScores, WvwTeams } from '~/types/api';
+import type { ApiMatchOverview, ApiMatchScores, ApiRegions, WvwTeams } from '~/types/api';
 import { useLang } from '~/utils/langs';
 
 const teams: WvwTeams[] = ['red', 'blue', 'green'];
-const regions = ['1', '2'];
+const regions: ApiRegions[] = ['1', '2'];
 
-export const Index = () => {
-  // const matchNumbers = uniq(map(matches, 'number')).sort();
-
+export const MatchOverviewsContainer = () => {
   return (
     <Layout>
       <main className="flex-auto">
@@ -47,29 +45,33 @@ const MatchOverviews: React.FC = () => {
   if (overviewIsLoading || scoresIsLoading) return <h1>{'Loading...'}</h1>;
   if (overviewError || scoresError) return <h1>{`An error has occurred: ${[overviewError, scoresError]}`}</h1>;
 
-  const matchIds = map(overviewData, 'id').sort();
   const overviews = keyBy(overviewData, 'id');
   const scores = keyBy(scoresData, 'id');
 
   return (
     <div className="flex flex-col gap-4 xl:flex-row">
-      {regions.map((region) => {
-        return (
-          <div key={region} className="flex flex-col gap-4">
-            {matchIds
-              .filter((matchId) => matchId.startsWith(region))
-              .map((matchId, index) => {
-                return (
-                  <React.Fragment key={matchId}>
-                    <div className={`grid grid-cols-1 gap-4 rounded-lg bg-white p-4 shadow md:grid-cols-3`}>
-                      <MatchOverview key={matchId} matchId={matchId} overviews={overviews} scores={scores} />
-                    </div>
-                  </React.Fragment>
-                );
-              })}
-          </div>
-        );
-      })}
+      {regions.map((region) => (
+        <RegionOverview key={region} region={region} overviews={overviews} scores={scores} />
+      ))}
+    </div>
+  );
+};
+
+interface IRegionOverviewProps {
+  region: '1' | '2';
+  overviews: Dictionary<ApiMatchOverview>;
+  scores: Dictionary<ApiMatchScores>;
+}
+const RegionOverview: React.FC<IRegionOverviewProps> = ({ region, overviews, scores }) => {
+  const matchIds = keys(overviews).sort();
+
+  return (
+    <div key={region} className="flex flex-col gap-4">
+      {matchIds
+        .filter((matchId) => matchId.startsWith(region))
+        .map((matchId) => (
+          <MatchOverview key={matchId} matchId={matchId} overviews={overviews} scores={scores} />
+        ))}
     </div>
   );
 };
@@ -80,51 +82,51 @@ interface IMatchOverviewProps {
   scores: Dictionary<ApiMatchScores>;
 }
 const MatchOverview: React.FC<IMatchOverviewProps> = ({ matchId, overviews, scores }) => {
-  const lang = useLang();
-
-  Object.freeze(scores);
-
-  const matchOverview = overviews[matchId];
   const matchScores = scores[matchId];
-  const worldsByTeams = matchOverview.all_worlds;
-
-  const scoreVals = values(matchScores.scores);
-  const sorted = scoreVals.sort();
+  const worldsByTeams = overviews[matchId].all_worlds;
 
   return (
-    <>
-      {teams.map((teamColor) => {
-        const teamWorlds = worldsByTeams[teamColor].filter((id) => id < 10000);
-        const teamScore = matchScores.scores[teamColor];
-        const rank = sorted.indexOf(teamScore);
+    <div className={`grid grid-cols-1 gap-4 rounded-lg bg-white p-4 shadow md:grid-cols-3`}>
+      {teams.map((teamColor) => (
+        <MatchTeam
+          key={`${matchId}-${teamColor}`}
+          teamColor={teamColor}
+          matchId={matchId}
+          matchScores={matchScores}
+          worldsByTeams={worldsByTeams}
+        />
+      ))}
+    </div>
+  );
+};
 
-        return (
-          <React.Fragment key={`${matchId}:${teamColor}`}>
-            <div
-              className={classNames(`flex flex-col gap-1 text-center text-sm`, {
-                'text-green-900': teamColor === 'green',
-                'text-red-900': teamColor === 'red',
-                'text-blue-900': teamColor === 'blue',
-              })}
-            >
-              <div
-                className={classNames(`py-1 text-3xl font-extralight`, {
-                  '': rank === 1,
-                })}
-              >
-                {teamScore.toLocaleString(lang)}
-              </div>
-              <>
-                {teamWorlds.map((worldId) => (
-                  <div key={worldId} className="whitespace-nowrap">
-                    <WorldIdLink worldId={worldId} />
-                  </div>
-                ))}
-              </>
-            </div>
-          </React.Fragment>
-        );
+interface IMatchTeamProps {
+  teamColor: WvwTeams;
+  matchId: string;
+  matchScores: ApiMatchScores;
+  worldsByTeams: Record<WvwTeams, number[]>;
+}
+
+const MatchTeam: React.FC<IMatchTeamProps> = ({ matchScores, worldsByTeams, teamColor, matchId }) => {
+  const lang = useLang();
+  const teamWorlds = worldsByTeams[teamColor].filter((id) => id < 10000);
+  const teamScore = matchScores.scores[teamColor];
+
+  return (
+    <div
+      key={`${matchId}:${teamColor}`}
+      className={classNames(`flex flex-col text-center text-sm`, {
+        'text-green-900': teamColor === 'green',
+        'text-red-900': teamColor === 'red',
+        'text-blue-900': teamColor === 'blue',
       })}
-    </>
+    >
+      <div className={classNames(`py-2 text-3xl font-extralight`)}>{teamScore.toLocaleString(lang)}</div>
+      {teamWorlds.map((worldId) => (
+        <div key={worldId} className="whitespace-nowrap">
+          <WorldIdLink worldId={worldId} />
+        </div>
+      ))}
+    </div>
   );
 };
