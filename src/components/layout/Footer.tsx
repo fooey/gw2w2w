@@ -1,6 +1,8 @@
 import { AiFillGithub } from 'react-icons/ai';
 import { MdCopyright, MdEmail } from 'react-icons/md';
 
+import pkgJson from '../../../package.json';
+
 export const Footer = () => {
   return (
     <footer className="mt-20 flex-none ">
@@ -30,6 +32,9 @@ export const Footer = () => {
           logo, ArenaNet, Guild Wars, Guild Wars Factions, Guild Wars Nightfall, Guild Wars: Eye of the North, Guild
           Wars 2, and all associated logos and designs are trademarks or registered trademarks of NCsoft Corporation.
           All other trademarks are the property of their respective owners.
+        </p>
+        <p>
+          v{pkgJson.version} @ {pkgJson.buildDate}
         </p>
       </div>
     </footer>
