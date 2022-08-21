@@ -5,11 +5,8 @@ import { Duration } from 'luxon';
 import React from 'react';
 import { Layout } from '~/components/layout/Layout';
 import { WorldIdLink } from '~/components/WorldName';
-import type { ApiMatchOverview, ApiMatchScores, ApiRegions, WvwTeams } from '~/types/api';
+import { ApiMatchOverview, ApiMatchScores, regions, teams, WvwTeams } from '~/types/api';
 import { useLang } from '~/utils/langs';
-
-const teams: WvwTeams[] = ['red', 'blue', 'green'];
-const regions: ApiRegions[] = ['1', '2'];
 
 export const MatchOverviewsContainer = () => {
   return (

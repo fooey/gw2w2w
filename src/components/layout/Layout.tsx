@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import { filter, map } from 'lodash';
 import React, { useState } from 'react';
 import ClickAwayListener from 'react-click-away-listener';
+import { FaGlobeAmericas, FaGlobeEurope } from 'react-icons/fa';
 import { MdChevronRight, MdHome } from 'react-icons/md';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { Footer } from '~/components/layout/Footer';
@@ -70,7 +71,6 @@ const WorldsPicker: React.FC<IWorldsPickerProps> = ({ region }) => {
   const [showList, setShowList] = useState(false);
   const worlds = useWorlds();
   const regionWorlds = filter(worlds.data, { region });
-  console.log(`🚀 ~ file: Layout.tsx ~ line 71 ~ regionWorlds`, regionWorlds, worlds.data);
   const langWorlds = map(regionWorlds, lang);
   const sortedWorlds = langWorlds.sort((a, b) => a.localeCompare(b));
 
@@ -84,11 +84,21 @@ const WorldsPicker: React.FC<IWorldsPickerProps> = ({ region }) => {
             id="menu-button"
             onClick={() => setShowList(!showList)}
           >
-            <div>
-              {region === '1' ? 'NA' : null}
-              {region === '2' ? 'EU' : null}
+            <div className="flex flex-row items-center gap-2">
+              {region === '1' ? (
+                <>
+                  <FaGlobeAmericas className="text-2xl" />
+                  <span>NA</span>
+                </>
+              ) : null}
+              {region === '2' ? (
+                <>
+                  <FaGlobeEurope className="text-2xl" />
+                  <span>EU</span>
+                </>
+              ) : null}
+              <MdChevronRight className="rotate-90 text-xl" />
             </div>
-            <MdChevronRight className="rotate-90 text-xl" />
           </button>
         </div>
         <div
