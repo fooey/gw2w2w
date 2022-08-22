@@ -1,13 +1,14 @@
 import classNames from 'classnames';
 import { flatten, groupBy, sumBy } from 'lodash';
-import { DateTime } from 'luxon';
+import { DateTime, Duration } from 'luxon';
+import { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { Layout } from '~/components/layout/Layout';
 import { WorldIdLink } from '~/components/WorldName';
 import { useWorldByName, useWorlds, WorldDictItem } from '~/queries/worlds';
 import { useWorldmatch } from '~/queries/wvw-match';
 import { useWvwObjective } from '~/queries/wvw-objectives';
-import { ApiMatch, ApiMatchMap, ApiMatchObjective, teams, WvwObjectiveTypes } from '~/types/api';
+import { ApiLang, ApiMatch, ApiMatchMap, ApiMatchObjective, teams, WvwObjectiveTypes } from '~/types/api';
 import { useLang } from '~/utils/langs';
 
 export const World = () => {
@@ -124,7 +125,7 @@ const Maps: React.FC<IMatchProps> = ({ maps }) => {
   return (
     <div className={`grid grid-cols-1 gap-4  px-4 md:grid-cols-4`}>
       {maps.map((matchMap) => (
-        <MatchMap matchMap={matchMap} />
+        <MatchMap key={matchMap.id} matchMap={matchMap} />
       ))}
     </div>
   );
@@ -133,8 +134,14 @@ interface IMatchMapProps {
   matchMap: ApiMatchMap;
 }
 const MatchMap: React.FC<IMatchMapProps> = ({ matchMap }) => {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const interval = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(interval);
+  });
+
   return (
-    <div className={`rounded-lg bg-white shadow`}>
+    <div key={now} className={`rounded-lg bg-white shadow`}>
       <div className="flex flex-row items-center justify-between p-2 px-4">
         <h1 className="text-center">{matchMap.type}</h1>
         <MatchMapScores mapScores={matchMap.scores} />
@@ -189,10 +196,10 @@ const MapObjectives: React.FC<IMapObjectivesProps> = ({ mapObjectives }) => {
 interface IMapObjectiveProps {
   mapObjective: ApiMatchObjective;
 }
+
 const MapObjective: React.FC<IMapObjectiveProps> = ({ mapObjective }) => {
+  const lang = useLang();
   const objectiveQuery = useWvwObjective(mapObjective.id);
-  const now = DateTime.utc();
-  const heldDuration = now.diff(DateTime.fromISO(mapObjective.last_flipped)).shiftTo('minutes', 'seconds');
 
   return (
     <li
@@ -203,16 +210,7 @@ const MapObjective: React.FC<IMapObjectiveProps> = ({ mapObjective }) => {
         'text-blue-900': mapObjective.owner.toLowerCase() === 'blue',
       })}
     >
-      <div title={mapObjective.type} className={`relative h-8 w-8`}>
-        <div
-          className={classNames(`absolute left-0 top-0 h-8 w-8 rounded-full border border-black`, {
-            'bg-gradient-to-br from-green-600 to-green-900': mapObjective.owner.toLowerCase() === 'green',
-            'bg-gradient-to-br from-red-600 to-red-900': mapObjective.owner.toLowerCase() === 'red',
-            'bg-gradient-to-br from-blue-600 to-blue-900': mapObjective.owner.toLowerCase() === 'blue',
-          })}
-        ></div>
-        <img src={`/icons/${mapObjective.type.toLowerCase()}.svg`} className={`absolute left-1.5 top-1.5 h-5 w-5`} />
-      </div>
+      <ObjectiveIcon mapObjective={mapObjective} />
       <div className="w-8">
         {mapObjective.claimed_by ? (
           <img src={`https://guilds.gw2w2w.com/short/${mapObjective.claimed_by}.svg`} width={32} height={32} />
@@ -221,14 +219,44 @@ const MapObjective: React.FC<IMapObjectiveProps> = ({ mapObjective }) => {
       <div className="flex flex-auto flex-row items-center justify-between gap-2">
         <div className="text-sm">{objectiveQuery.data?.name}</div>
         <div className="text-xs">
-          {mapObjective.last_flipped
-            ? heldDuration.toHuman({
-                unitDisplay: 'narrow',
-                listStyle: 'narrow',
-              })
-            : null}
+          {mapObjective.last_flipped ? lastFlippedString(lang, mapObjective.last_flipped) : null}
         </div>
       </div>
     </li>
   );
+};
+
+const ObjectiveIcon: React.FC<{ mapObjective: ApiMatchObjective }> = ({ mapObjective }) => (
+  <div title={mapObjective.type} className={`relative h-6 w-6`}>
+    <div
+      className={classNames(`absolute inset-0 rounded-full border border-black`, {
+        'bg-gradient-to-br from-green-600 to-green-900': mapObjective.owner.toLowerCase() === 'green',
+        'bg-gradient-to-br from-red-600 to-red-900': mapObjective.owner.toLowerCase() === 'red',
+        'bg-gradient-to-br from-blue-600 to-blue-900': mapObjective.owner.toLowerCase() === 'blue',
+      })}
+    ></div>
+    <img src={`/icons/${mapObjective.type.toLowerCase()}.svg`} className={`absolute inset-1 h-4 w-4`} />
+  </div>
+);
+
+const hourDuration = Duration.fromObject({ hours: 1 });
+const highlightDuration = Duration.fromObject({ seconds: 60 });
+const lastFlippedString = (lang: ApiLang, lastFlipped: string) => {
+  const now = DateTime.utc();
+  const flipDateTime = DateTime.fromISO(lastFlipped);
+  const heldDuration = now.diff(flipDateTime).shiftTo('hours', 'minutes', 'seconds');
+
+  return heldDuration < hourDuration ? (
+    <div
+      className={classNames('transition-all', {
+        'bg-yellow-100 font-semibold': heldDuration < highlightDuration,
+      })}
+    >
+      {flipDateTime.toRelative({
+        style: 'narrow',
+        locale: lang,
+        round: true,
+      })}
+    </div>
+  ) : null;
 };
