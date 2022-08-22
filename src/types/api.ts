@@ -57,7 +57,7 @@ export interface ApiMatchMap {
 }
 export interface ApiMatchObjective {
   id: string;
-  type: string;
+  type: WvwObjectiveTypes;
   owner: WvwTeams;
   last_flipped: string;
   points_tick: number;

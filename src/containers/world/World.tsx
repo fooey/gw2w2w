@@ -7,7 +7,7 @@ import { WorldIdLink } from '~/components/WorldName';
 import { useWorldByName, useWorlds, WorldDictItem } from '~/queries/worlds';
 import { useWorldmatch } from '~/queries/wvw-match';
 import { useWvwObjective } from '~/queries/wvw-objectives';
-import { ApiMatch, ApiMatchMap, ApiMatchObjective, teams } from '~/types/api';
+import { ApiMatch, ApiMatchMap, ApiMatchObjective, teams, WvwObjectiveTypes } from '~/types/api';
 import { useLang } from '~/utils/langs';
 
 export const World = () => {
@@ -173,10 +173,13 @@ const MatchMapScores: React.FC<IMatchMapScoresProps> = ({ mapScores }) => {
 interface IMapObjectivesProps {
   mapObjectives: ApiMatchObjective[];
 }
+const interestingObjectiveTypes: WvwObjectiveTypes[] = ['Keep', 'Castle', 'Camp', 'Tower'];
 const MapObjectives: React.FC<IMapObjectivesProps> = ({ mapObjectives }) => {
+  const filteredObjectives = mapObjectives.filter((o) => interestingObjectiveTypes.includes(o.type));
+
   return (
     <ul className="flex flex-col gap-1">
-      {mapObjectives.map((mapObjective) => (
+      {filteredObjectives.map((mapObjective) => (
         <MapObjective key={mapObjective.id} mapObjective={mapObjective} />
       ))}
     </ul>
@@ -188,6 +191,8 @@ interface IMapObjectiveProps {
 }
 const MapObjective: React.FC<IMapObjectiveProps> = ({ mapObjective }) => {
   const objectiveQuery = useWvwObjective(mapObjective.id);
+  const now = DateTime.utc();
+  const heldDuration = now.diff(DateTime.fromISO(mapObjective.last_flipped)).shiftTo('minutes', 'seconds');
 
   return (
     <li
@@ -198,19 +203,15 @@ const MapObjective: React.FC<IMapObjectiveProps> = ({ mapObjective }) => {
         'text-blue-900': mapObjective.owner.toLowerCase() === 'blue',
       })}
     >
-      <div className="w-8" title={mapObjective.type}>
-        {objectiveQuery.data?.marker ? (
-          <img
-            src={objectiveQuery.data?.marker}
-            width={32}
-            height={32}
-            className={classNames(``, {
-              'hue-rotate-180': mapObjective.owner.toLowerCase() === 'green',
-              'text-red-900': mapObjective.owner.toLowerCase() === 'red',
-              'text-blue-900': mapObjective.owner.toLowerCase() === 'blue',
-            })}
-          />
-        ) : null}
+      <div title={mapObjective.type} className={`relative h-8 w-8`}>
+        <div
+          className={classNames(`absolute left-0 top-0 h-8 w-8 rounded-full border border-black`, {
+            'bg-gradient-to-br from-green-600 to-green-900': mapObjective.owner.toLowerCase() === 'green',
+            'bg-gradient-to-br from-red-600 to-red-900': mapObjective.owner.toLowerCase() === 'red',
+            'bg-gradient-to-br from-blue-600 to-blue-900': mapObjective.owner.toLowerCase() === 'blue',
+          })}
+        ></div>
+        <img src={`/icons/${mapObjective.type.toLowerCase()}.svg`} className={`absolute left-1.5 top-1.5 h-5 w-5`} />
       </div>
       <div className="w-8">
         {mapObjective.claimed_by ? (
@@ -221,7 +222,10 @@ const MapObjective: React.FC<IMapObjectiveProps> = ({ mapObjective }) => {
         <div className="text-sm">{objectiveQuery.data?.name}</div>
         <div className="text-xs">
           {mapObjective.last_flipped
-            ? DateTime.fromISO(mapObjective.last_flipped).toRelative({ style: 'short' })
+            ? heldDuration.toHuman({
+                unitDisplay: 'narrow',
+                listStyle: 'narrow',
+              })
             : null}
         </div>
       </div>
