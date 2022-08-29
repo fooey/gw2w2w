@@ -1,10 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
 import classNames from 'classnames';
 import { Dictionary, keyBy, keys } from 'lodash';
-import { Duration } from 'luxon';
 import React from 'react';
 import { Layout } from '~/components/layout/Layout';
 import { WorldIdLink } from '~/components/WorldName';
+import { useMatchesOverview, useMatchesScores } from '~/queries/wvw-match';
 import { ApiMatchOverview, ApiMatchScores, regions, teams, WvwTeams } from '~/types/api';
 import { useLang } from '~/utils/langs';
 
@@ -21,23 +20,8 @@ export const MatchOverviewsContainer = () => {
 };
 
 const MatchOverviews: React.FC = () => {
-  const {
-    isLoading: overviewIsLoading,
-    error: overviewError,
-    data: overviewData,
-  } = useQuery<ApiMatchOverview[]>([`/v2/wvw/matches/overview?ids=all`], {
-    cacheTime: Duration.fromObject({ minutes: 60 }).as('milliseconds'),
-    staleTime: Duration.fromObject({ minutes: 10 }).as('milliseconds'),
-  });
-  const {
-    isLoading: scoresIsLoading,
-    error: scoresError,
-    data: scoresData,
-  } = useQuery<ApiMatchScores[]>([`/v2/wvw/matches/scores?ids=all`], {
-    cacheTime: Duration.fromObject({ minutes: 60 }).as('milliseconds'),
-    staleTime: Duration.fromObject({ minutes: 5 }).as('milliseconds'),
-    refetchInterval: Duration.fromObject({ seconds: 10 }).as('milliseconds'),
-  });
+  const { isLoading: overviewIsLoading, error: overviewError, data: overviewData } = useMatchesOverview();
+  const { isLoading: scoresIsLoading, error: scoresError, data: scoresData } = useMatchesScores();
 
   if (overviewIsLoading || scoresIsLoading) return <h1>{'Loading...'}</h1>;
   if (overviewError || scoresError) return <h1>{`An error has occurred: ${[overviewError, scoresError]}`}</h1>;
