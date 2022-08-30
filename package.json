@@ -1,7 +1,7 @@
 {
   "name": "gw2w2w",
   "private": true,
-  "version": "2022.0.19",
+  "version": "2022.0.20",
   "type": "module",
   "scripts": {
     "start": "npm run dev",
