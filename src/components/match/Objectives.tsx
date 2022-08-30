@@ -15,12 +15,15 @@ import { useWvwObjective } from '~/queries/wvw-objectives';
 import { ApiLang, ApiMatchObjective, WvwObjectiveTypes } from '~/types/api';
 import { Direction } from './objectives-layout';
 
+import React from 'react';
 import { ReactComponent as CampSVG } from '~/icons/camp.svg';
 import { ReactComponent as CastleSVG } from '~/icons/castle.svg';
 import { ReactComponent as KeepSVG } from '~/icons/keep.svg';
 import { ReactComponent as TowerSVG } from '~/icons/tower.svg';
 
-const ObjectiveIconsMap: Record<WvwObjectiveTypes, IconType> = {
+type SVGComponent = React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+
+const ObjectiveIconsMap: Record<WvwObjectiveTypes, SVGComponent> = {
   Castle: CastleSVG,
   Keep: KeepSVG,
   Tower: TowerSVG,
@@ -38,7 +41,7 @@ export const ObjectiveIcon: React.FC<{ mapObjective: ApiMatchObjective }> = ({ m
         'fill-green-900': mapObjective.owner.toLowerCase() === 'green',
         'fill-red-900': mapObjective.owner.toLowerCase() === 'red',
         'fill-blue-900': mapObjective.owner.toLowerCase() === 'blue',
-      })}
+      }).toString()}
     />
   );
 };
