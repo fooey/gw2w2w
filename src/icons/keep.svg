@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <path style="fill:inherit;stroke:inherit;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+    d="M144 496H64v-48h16V160s-32-48-32-96V16h80v64h32V16h80v64h32V16h80v64h32V16h80v48c0 48-32 96-32 96v288h16v48h-80c0-256-224-256-224 0z" />
+</svg>

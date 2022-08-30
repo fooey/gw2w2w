@@ -1,16 +1,10 @@
 import classNames from 'classnames';
-import { Reorder } from 'framer-motion';
-import { flatten, noop, sortBy } from 'lodash';
-import { DateTime, Duration } from 'luxon';
-import { useEffect, useState } from 'react';
-import { WorldDictItem } from '~/queries/worlds';
-import { useMatch } from '~/queries/wvw-match';
-import { useWvwObjective } from '~/queries/wvw-objectives';
-import { ApiLang, ApiMatch, ApiMatchMap, ApiMatchObjective, teams, WvwObjectiveTypes } from '~/types/api';
+import { chain, map } from 'lodash';
+import { ApiMatchMap, ApiMatchObjective, teams } from '~/types/api';
 import { useLang } from '~/utils/langs';
-import { lastFlippedString, ObjectiveGuild, ObjectiveIcon, ObjectiveName } from './Objectives';
-import { Scoreboard } from './Scoreboard';
-import { interestingObjectiveTypes, useNow } from './utils';
+import { DirectionIcon, lastFlippedString, ObjectiveGuild, ObjectiveIcon, ObjectiveName } from './Objectives';
+import { LayoutObjective, objectivesLayout } from './objectives-layout';
+import { objectiveTypes, useNow } from './utils';
 
 export interface IMapProps {
   maps: ApiMatchMap[];
@@ -28,6 +22,13 @@ interface IMatchMapProps {
   matchMap: ApiMatchMap;
 }
 const MatchMap: React.FC<IMatchMapProps> = ({ matchMap }) => {
+  const filteredObjectives = chain(matchMap.objectives)
+    .filter((o) => objectiveTypes.includes(o.type))
+    .orderBy(['points_capture'], ['desc'])
+    .value();
+
+  const mapLayout = objectivesLayout[matchMap.type];
+
   return (
     <div
       className={classNames(`rounded-lg border border-y-8 bg-white shadow`, {
@@ -41,7 +42,25 @@ const MatchMap: React.FC<IMatchMapProps> = ({ matchMap }) => {
         <h1 className="text-center">{matchMap.type}</h1>
         <MatchMapScores mapScores={matchMap.scores} />
       </div>
-      <MapObjectives mapObjectives={matchMap.objectives} />
+      <div className={`flex flex-col gap-4 py-4`}>
+        {map(mapLayout, (sectionObjectives, sectionTitle) => {
+          return (
+            <section key={sectionTitle}>
+              {/* <h1>{sectionTitle}</h1> */}
+              <div>
+                {sectionObjectives.objectives.map((layoutObjective) => {
+                  const objective = filteredObjectives.find((o) => o.id.split('-')[1] === layoutObjective.id);
+                  return objective ? (
+                    <MapObjective key={objective.id} mapObjective={objective} layoutObjective={layoutObjective} />
+                  ) : (
+                    <div>{layoutObjective.id}</div>
+                  );
+                })}
+              </div>
+            </section>
+          );
+        })}
+      </div>
     </div>
   );
 };
@@ -72,41 +91,42 @@ const MatchMapScores: React.FC<IMatchMapScoresProps> = ({ mapScores }) => {
   );
 };
 
-interface IMapObjectivesProps {
-  mapObjectives: ApiMatchObjective[];
-}
-const MapObjectives: React.FC<IMapObjectivesProps> = ({ mapObjectives }) => {
-  const filteredObjectives = mapObjectives.filter((o) => interestingObjectiveTypes.includes(o.type));
-
-  return (
-    <ul className="flex flex-col gap-1">
-      {filteredObjectives.map((mapObjective) => (
-        <MapObjective key={mapObjective.id} mapObjective={mapObjective} />
-      ))}
-    </ul>
-  );
-};
+// interface IMapObjectivesProps {
+//   mapObjectives: ApiMatchObjective[];
+// }
+// const MapObjectives: React.FC<IMapObjectivesProps> = ({ mapObjectives }) => {
+//   return (
+//     <div className="flex flex-col gap-1">
+//       {mapObjectives.map((mapObjective) => (
+//         <MapObjective key={mapObjective.id} mapObjective={mapObjective} layoutObjective={{ id: '', direction: '' }} />
+//       ))}
+//     </div>
+//   );
+// };
 
 interface IMapObjectiveProps {
   mapObjective: ApiMatchObjective;
+  layoutObjective: LayoutObjective;
 }
 
-const MapObjective: React.FC<IMapObjectiveProps> = ({ mapObjective }) => {
+const MapObjective: React.FC<IMapObjectiveProps> = ({ mapObjective, layoutObjective }) => {
   const now = useNow();
   const lang = useLang();
-  const objectiveQuery = useWvwObjective(mapObjective.id);
 
   return (
-    <li
+    <div
       key={mapObjective.id}
-      className={classNames(`flex h-8 flex-row items-center gap-2 px-2`, {
+      className={classNames(`flex h-9 flex-row items-center gap-2 px-2 even:bg-neutral-50 hover:bg-yellow-50`, {
         'text-green-900': mapObjective.owner.toLowerCase() === 'green',
         'text-red-900': mapObjective.owner.toLowerCase() === 'red',
         'text-blue-900': mapObjective.owner.toLowerCase() === 'blue',
       })}
     >
-      <ObjectiveIcon mapObjective={mapObjective} />
-      <ObjectiveGuild mapObjective={mapObjective} />
+      <div className="flex h-9 flex-row items-center gap-1">
+        <DirectionIcon direction={layoutObjective.direction} />
+        <ObjectiveIcon mapObjective={mapObjective} />
+        <ObjectiveGuild mapObjective={mapObjective} />
+      </div>
 
       <div className="flex flex-auto flex-row items-center justify-between gap-2">
         <ObjectiveName mapObjective={mapObjective} />
@@ -114,6 +134,6 @@ const MapObjective: React.FC<IMapObjectiveProps> = ({ mapObjective }) => {
           {mapObjective.last_flipped ? lastFlippedString(lang, mapObjective.last_flipped) : null}
         </div>
       </div>
-    </li>
+    </div>
   );
 };

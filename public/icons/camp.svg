@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512">
-  <path mask="url(#windows)"
-    style="fill:#000;stroke:#000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-    d="M256 304s-32 112-144 112H32s80-144 48-208c0 0 144-32 176-128 32 96 176 128 176 128-32 64 48 208 48 208h-96c-80 0-128-112-128-112z" />
-  <mask id="windows">
-    <rect width="100%" height="100%" fill="#fff" />
-    <path d="M144 240h32v48h-32zm192 0h32v48h-32z" />
-  </mask>
-</svg>

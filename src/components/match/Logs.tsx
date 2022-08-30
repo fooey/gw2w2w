@@ -5,13 +5,13 @@ import { useWvwObjective } from '~/queries/wvw-objectives';
 import { ApiMatchObjective } from '~/types/api';
 import { useLang } from '~/utils/langs';
 import { lastFlippedString, ObjectiveGuild, ObjectiveIcon, ObjectiveName } from './Objectives';
-import { interestingObjectiveTypes, useNow } from './utils';
+import { objectiveTypes, useNow } from './utils';
 
 interface ILogsProps {
   objectives: ApiMatchObjective[];
 }
 export const Logs: React.FC<ILogsProps> = ({ objectives }) => {
-  const filteredObjectives = objectives.filter((mapObjective) => interestingObjectiveTypes.includes(mapObjective.type));
+  const filteredObjectives = objectives.filter((mapObjective) => objectiveTypes.includes(mapObjective.type));
   const captures = filteredObjectives
     .filter((mapObjective) => mapObjective.last_flipped)
     .map((mapObjective) => ({ type: 'capture', timestamp: mapObjective.last_flipped, mapObjective } as ObjectiveEvent));

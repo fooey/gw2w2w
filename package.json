@@ -26,7 +26,8 @@
     "react-click-away-listener": "^2.2.1",
     "react-dom": "^18.2.0",
     "react-icons": "^4.4.0",
-    "react-router-dom": "^6.3.0"
+    "react-router-dom": "^6.3.0",
+    "vite-plugin-svgr": "^2.2.1"
   },
   "devDependencies": {
     "@npmcli/package-json": "^2.0.0",

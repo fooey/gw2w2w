@@ -2,7 +2,10 @@ import { DateTime } from 'luxon';
 import { useEffect, useState } from 'react';
 import { WvwObjectiveTypes } from '~/types/api';
 
-export const interestingObjectiveTypes: WvwObjectiveTypes[] = ['Keep', 'Castle', 'Camp', 'Tower'];
+export const objectiveTypes: WvwObjectiveTypes[] = ['Castle', 'Keep', 'Camp', 'Tower'];
+export const objectivePriority = objectiveTypes.reduce((acc, type, index) => {
+  return { ...acc, [type]: index };
+}, {});
 
 export const getNow = () => DateTime.local();
 export const useNow = () => {
