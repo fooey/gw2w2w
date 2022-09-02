@@ -1,6 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
-import { find, keyBy, keys, reduce } from 'lodash';
-import { ApiRegions, ApiWorld } from '~/types/api';
+import { useQueries, UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
+import { find, keyBy, keys, reduce, some } from 'lodash';
+import { ApiLang, ApiRegions, ApiWorld } from '~/types/api';
+import { langs } from '~/utils/langs';
 import { QUERY_STATIC } from './config';
 
 export type WorldDict = Record<number, WorldDictItem>;
@@ -12,56 +13,47 @@ export type WorldDictItem = {
   de: string;
   fr: string;
   zh: string;
+  names: string[];
 };
 
+type LangDict = Record<ApiLang, Record<number, ApiWorld>>;
+
+type WorldsByLang = Record<ApiLang, Record<number, ApiWorld>>;
+
+const worldsByLangInit: WorldsByLang = Object.freeze({
+  en: {},
+  es: {},
+  de: {},
+  fr: {},
+  zh: {},
+});
+
+const useWorldsQueries = () =>
+  useQueries({
+    queries: langs.map((lang) => {
+      const queryOptions: UseQueryOptions<ApiWorld[]> = {
+        ...QUERY_STATIC,
+        queryKey: [`/v2/worlds?lang=${lang}&ids=all`],
+      };
+
+      return queryOptions;
+    }),
+  });
+
 export const useWorlds = () => {
-  const enWorldsQuery = useQuery<ApiWorld[]>([`/v2/worlds?lang=en&ids=all`], QUERY_STATIC);
-  const esWorldsQuery = useQuery<ApiWorld[]>([`/v2/worlds?lang=es&ids=all`], QUERY_STATIC);
-  const deWorldsQuery = useQuery<ApiWorld[]>([`/v2/worlds?lang=de&ids=all`], QUERY_STATIC);
-  const frWorldsQuery = useQuery<ApiWorld[]>([`/v2/worlds?lang=fr&ids=all`], QUERY_STATIC);
-  const zhWorldsQuery = useQuery<ApiWorld[]>([`/v2/worlds?lang=zh&ids=all`], QUERY_STATIC);
+  const worldsQueries = useWorldsQueries();
 
   let data: WorldDict | undefined = undefined;
 
-  const isLoading =
-    enWorldsQuery.isLoading ||
-    esWorldsQuery.isLoading ||
-    deWorldsQuery.isLoading ||
-    frWorldsQuery.isLoading ||
-    zhWorldsQuery.isLoading;
+  const isLoading = some(worldsQueries, 'isLoading');
+  const isError = some(worldsQueries, 'isError');
+  const isFetched = some(worldsQueries, 'isFetched');
 
   if (!isLoading) {
-    const enWorlds = keyBy(enWorldsQuery.data, 'id');
-    const esWorlds = keyBy(esWorldsQuery.data, 'id');
-    const deWorlds = keyBy(deWorldsQuery.data, 'id');
-    const frWorlds = keyBy(frWorldsQuery.data, 'id');
-    const zhWorlds = keyBy(zhWorldsQuery.data, 'id');
-
-    const worldIds = keys(enWorlds);
-
-    data = reduce(
-      worldIds,
-      (acc, id) => {
-        const [region] = id[0];
-        const worldAgg: WorldDictItem = {
-          id: Number(id),
-          region: region as ApiRegions,
-          en: enWorlds[id].name,
-          es: esWorlds[id].name,
-          de: deWorlds[id].name,
-          fr: frWorlds[id].name,
-          zh: zhWorlds[id].name,
-        };
-        return {
-          ...acc,
-          [id]: worldAgg,
-        };
-      },
-      {}
-    );
+    data = buildWorldDict(worldsQueries);
   }
 
-  return { data, isLoading };
+  return { data, isLoading, isError, isFetched };
 };
 
 export const useWorld = (worldId?: number) => {
@@ -79,8 +71,57 @@ export const useWorldByName = (worldName?: string) => {
 
   let data: WorldDictItem | undefined = undefined;
 
-  if (worldName && worlds.data)
-    data = find(worlds.data, ({ en, es, de, fr, zh }) => [en, es, de, fr, zh].includes(worldName));
+  if (worldName && worlds.isFetched && worlds.data)
+    data = find(worlds.data, ({ names: all }) => all.includes(worldName));
 
   return { ...worlds, data };
+};
+
+const buildWorldDict = (worldsQueries: UseQueryResult<ApiWorld[], unknown>[]): WorldDict => {
+  let data: WorldDict | undefined = undefined;
+
+  const worldsByLang: WorldsByLang = langs.reduce((acc, lang, index) => {
+    const langWordsById = keyBy(worldsQueries[index].data, 'id');
+
+    return {
+      ...acc,
+      [lang]: langWordsById,
+    };
+  }, worldsByLangInit);
+
+  const worldIds = keys(worldsByLang['en']);
+
+  data = reduce(
+    worldIds,
+    (acc, id) => {
+      const [region] = id[0];
+      const idNum = Number(id);
+      const init: Partial<WorldDictItem> & { names: string[] } = {
+        names: [],
+      };
+      const worldLangs = langs.reduce((acc, lang: ApiLang) => {
+        const name = worldsByLang[lang][idNum].name;
+
+        return {
+          ...acc,
+          names: [...acc.names, name],
+          [lang]: name,
+        };
+      }, init);
+
+      const worldAgg: WorldDictItem = {
+        id: idNum,
+        region: region as ApiRegions,
+        ...worldLangs,
+      } as WorldDictItem;
+
+      return {
+        ...acc,
+        [id]: worldAgg,
+      };
+    },
+    {}
+  );
+
+  return data;
 };
