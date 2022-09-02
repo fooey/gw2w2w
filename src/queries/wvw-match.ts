@@ -24,6 +24,7 @@ export const useMatch = (matchId?: ApiMatch['id']) => {
     enabled: matchId !== undefined,
   });
 };
+
 export const useWorldMatch = (worldId?: number) => {
   return useQuery<ApiMatch>([`/v2/wvw/matches?world=${worldId}`], {
     cacheTime: Duration.fromObject({ minutes: 60 }).as('milliseconds'),

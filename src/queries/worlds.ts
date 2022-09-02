@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { find, keyBy, keys, reduce } from 'lodash';
-import { Duration } from 'luxon';
 import { ApiRegions, ApiWorld } from '~/types/api';
+import { QUERY_STATIC } from './config';
 
 export type WorldDict = Record<number, WorldDictItem>;
 export type WorldDictItem = {
@@ -14,17 +14,12 @@ export type WorldDictItem = {
   zh: string;
 };
 
-const useWorldsQueryOptions = {
-  cacheTime: Duration.fromObject({ days: 1 }).as('milliseconds'),
-  staleTime: Duration.fromObject({ hour: 1 }).as('milliseconds'),
-};
-
 export const useWorlds = () => {
-  const enWorldsQuery = useQuery<ApiWorld[]>([`/v2/worlds?lang=en&ids=all`], useWorldsQueryOptions);
-  const esWorldsQuery = useQuery<ApiWorld[]>([`/v2/worlds?lang=es&ids=all`], useWorldsQueryOptions);
-  const deWorldsQuery = useQuery<ApiWorld[]>([`/v2/worlds?lang=de&ids=all`], useWorldsQueryOptions);
-  const frWorldsQuery = useQuery<ApiWorld[]>([`/v2/worlds?lang=fr&ids=all`], useWorldsQueryOptions);
-  const zhWorldsQuery = useQuery<ApiWorld[]>([`/v2/worlds?lang=zh&ids=all`], useWorldsQueryOptions);
+  const enWorldsQuery = useQuery<ApiWorld[]>([`/v2/worlds?lang=en&ids=all`], QUERY_STATIC);
+  const esWorldsQuery = useQuery<ApiWorld[]>([`/v2/worlds?lang=es&ids=all`], QUERY_STATIC);
+  const deWorldsQuery = useQuery<ApiWorld[]>([`/v2/worlds?lang=de&ids=all`], QUERY_STATIC);
+  const frWorldsQuery = useQuery<ApiWorld[]>([`/v2/worlds?lang=fr&ids=all`], QUERY_STATIC);
+  const zhWorldsQuery = useQuery<ApiWorld[]>([`/v2/worlds?lang=zh&ids=all`], QUERY_STATIC);
 
   let data: WorldDict | undefined = undefined;
 
