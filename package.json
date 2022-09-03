@@ -9,8 +9,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "preversion": "node scripts/build.cjs && git commit -m \"update buildDate\" package.json",
-    "version": "git push --follow-tags",
-    "postversion": "npm run publish",
+    "postversion": "git push --follow-tags && npm run publish",
     "publish": "npm run build && npm run deploy",
     "deploy": "wrangler pages publish dist --project-name gw2w2w"
   },
