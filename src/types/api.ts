@@ -65,7 +65,7 @@ export interface ApiMatchObjective {
   claimed_by?: string;
   claimed_at?: string;
   yaks_delivered?: number;
-  guild_updgrades?: number[];
+  guild_upgrades?: number[];
 }
 export interface ApiMatchMapBonus {
   type: 'Bloodlust';

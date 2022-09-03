@@ -16,6 +16,7 @@ import { ApiMatchObjective, WvwObjectiveTypes } from '~/types/api';
 import { Direction } from './objectives-layout';
 
 import React from 'react';
+import { MdShield } from 'react-icons/md';
 import { ReactComponent as CampSVG } from '~/icons/camp.svg';
 import { ReactComponent as CastleSVG } from '~/icons/castle.svg';
 import { ReactComponent as KeepSVG } from '~/icons/keep.svg';
@@ -79,8 +80,18 @@ export const ObjectiveGuild: React.FC<{ mapObjective: ApiMatchObjective }> = ({ 
   return (
     <div className="w-6">
       {mapObjective.claimed_by ? (
-        <a href={guildUrl} target="_blank">
+        <a href={guildUrl} target="_blank" className={`relative block`}>
           <img src={emblemUrl} className="h-6 w-6" />
+          {mapObjective.guild_upgrades && mapObjective.guild_upgrades.length ? (
+            <>
+              <span className={`absolute -right-1 -top-1 w-4 stroke-black text-base text-yellow-400`}>
+                <MdShield />
+              </span>
+              <span className={`absolute -right-1 -top-1 w-4 stroke-black text-center text-[10px] text-black`}>
+                {mapObjective.guild_upgrades.length}
+              </span>
+            </>
+          ) : null}
         </a>
       ) : null}
     </div>

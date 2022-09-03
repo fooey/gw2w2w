@@ -139,13 +139,10 @@ interface ITimestampRelativeProps {
   timestamp: string;
 }
 export const ImmunityCountdown: React.FC<ITimestampRelativeProps> = ({ timestamp }) => {
-  const lang = useLang();
   const now = useNow();
 
   const dateTime = DateTime.fromISO(timestamp);
   const expiration = dateTime.plus(Duration.fromObject({ minutes: 5 }));
-  const highlightDuration = Duration.fromObject({ seconds: 5 });
-  const maxDuration = Duration.fromObject({ minutes: 6 });
 
   const remainingDuration = expiration.diff(now).shiftTo('seconds');
   const secondsRemaining = remainingDuration.seconds;
