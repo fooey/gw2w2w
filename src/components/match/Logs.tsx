@@ -4,8 +4,8 @@ import { DateTime } from 'luxon';
 import { useWvwObjective } from '~/queries';
 import { ApiMatchObjective } from '~/types/api';
 import { useLang } from '~/utils/langs';
-import { lastFlippedString, ObjectiveGuild, ObjectiveIcon, ObjectiveName } from './Objectives';
-import { objectiveTypes, useNow } from './utils';
+import { ObjectiveGuild, ObjectiveIcon, ObjectiveName, TimestampRelative } from './Objectives';
+import { objectiveTypes } from './utils';
 
 interface ILogsProps {
   objectives: ApiMatchObjective[];
@@ -55,7 +55,6 @@ interface ILogItemProps {
   mapObjectiveEvent: ObjectiveEvent;
 }
 const LogItem: React.FC<ILogItemProps> = ({ mapObjectiveEvent }) => {
-  const now = useNow();
   const lang = useLang();
   const { mapObjective, type, timestamp } = mapObjectiveEvent;
   const objectiveQuery = useWvwObjective(mapObjective.id);
@@ -72,7 +71,9 @@ const LogItem: React.FC<ILogItemProps> = ({ mapObjectiveEvent }) => {
 
       <div className="flex flex-auto flex-row items-center justify-between gap-2">
         <ObjectiveName mapObjective={mapObjective} />
-        <div className="text-xs">{lastFlippedString(lang, timestamp)}</div>
+        <div className="text-xs">
+          <TimestampRelative timestamp={timestamp} />
+        </div>
       </div>
     </div>
   );

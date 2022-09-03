@@ -12,7 +12,7 @@ import {
   RiArrowUpFill,
 } from 'react-icons/ri';
 import { useWvwObjective } from '~/queries';
-import { ApiLang, ApiMatchObjective, WvwObjectiveTypes } from '~/types/api';
+import { ApiMatchObjective, WvwObjectiveTypes } from '~/types/api';
 import { Direction } from './objectives-layout';
 
 import React from 'react';
@@ -20,6 +20,8 @@ import { ReactComponent as CampSVG } from '~/icons/camp.svg';
 import { ReactComponent as CastleSVG } from '~/icons/castle.svg';
 import { ReactComponent as KeepSVG } from '~/icons/keep.svg';
 import { ReactComponent as TowerSVG } from '~/icons/tower.svg';
+import { useLang } from '~/utils/langs';
+import { useNow } from './utils';
 
 type SVGComponent = React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
 
@@ -93,10 +95,11 @@ export const ObjectiveName: React.FC<{ mapObjective: ApiMatchObjective }> = ({ m
 const hourDuration = Duration.fromObject({ hours: 1 });
 const highlightDuration = Duration.fromObject({ seconds: 60 });
 
-export const lastFlippedString = (lang: ApiLang, lastFlipped: string) => {
-  const now = DateTime.utc();
-  const flipDateTime = DateTime.fromISO(lastFlipped);
-  const heldDuration = now.diff(flipDateTime).shiftTo('hours', 'minutes', 'seconds');
+export const TimestampRelative: React.FC<{ timestamp: string }> = ({ timestamp }) => {
+  const lang = useLang();
+  const now = useNow();
+  const dateTime = DateTime.fromISO(timestamp);
+  const heldDuration = now.diff(dateTime).shiftTo('hours', 'minutes', 'seconds');
 
   const highlight = heldDuration < highlightDuration;
 
@@ -106,7 +109,7 @@ export const lastFlippedString = (lang: ApiLang, lastFlipped: string) => {
         'bg-yellow-100 font-bold': highlight,
       })}
     >
-      {flipDateTime.toRelative({
+      {dateTime.toRelative({
         style: 'narrow',
         locale: lang,
         round: true,
