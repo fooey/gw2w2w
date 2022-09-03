@@ -1,5 +1,5 @@
 import { Link, LinkProps } from 'react-router-dom';
-import { useWorld, useWorldByName } from '~/queries/worlds';
+import { useWorld, useWorldByName } from '~/queries';
 import { useLang } from '~/utils/langs';
 
 interface IWorldNameProps extends Partial<LinkProps> {

@@ -1,8 +1,7 @@
 import { Navigate, useParams } from 'react-router-dom';
 import { Layout } from '~/components/layout/Layout';
 import { Match } from '~/components/match/Match';
-import { useWorldByName } from '~/queries/worlds';
-import { useWorldMatchOverview } from '~/queries/wvw-match';
+import { useWorldByName, useWorldMatchOverview } from '~/queries';
 import { useLang } from '~/utils/langs';
 
 export const World = () => {

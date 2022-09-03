@@ -6,7 +6,7 @@ import ClickAwayListener from 'react-click-away-listener';
 import { FaGlobeAmericas, FaGlobeEurope } from 'react-icons/fa';
 import { MdChevronRight, MdHome } from 'react-icons/md';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
-import { useWorlds } from '~/queries/worlds';
+import { useWorlds } from '~/queries';
 import type { ApiLang, ApiRegions } from '~/types/api';
 import { flags, langs, useLang } from '~/utils/langs';
 import { Spinner } from '../Spinner';

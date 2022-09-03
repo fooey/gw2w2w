@@ -3,7 +3,7 @@ import { Dictionary, keyBy, keys } from 'lodash';
 import React from 'react';
 import { Layout } from '~/components/layout/Layout';
 import { WorldIdLink } from '~/components/WorldName';
-import { useMatchesOverview, useMatchesScores } from '~/queries/wvw-match';
+import { useMatchesOverview, useMatchesScores } from '~/queries';
 import { ApiMatchOverview, ApiMatchScores, regions, teams, WvwTeams } from '~/types/api';
 import { useLang } from '~/utils/langs';
 

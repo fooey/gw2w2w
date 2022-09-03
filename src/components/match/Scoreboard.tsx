@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { groupBy, sumBy } from 'lodash';
 import { WorldIdLink } from '~/components/WorldName';
-import { WorldDictItem } from '~/queries/worlds';
+import type { WorldDictItem } from '~/queries/worlds';
 import { ApiMatch, ApiMatchObjective, teams } from '~/types/api';
 import { useLang } from '~/utils/langs';
 

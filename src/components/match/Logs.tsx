@@ -1,7 +1,7 @@
 import { Reorder } from 'framer-motion';
 import { noop, sortBy } from 'lodash';
 import { DateTime } from 'luxon';
-import { useWvwObjective } from '~/queries/wvw-objectives';
+import { useWvwObjective } from '~/queries';
 import { ApiMatchObjective } from '~/types/api';
 import { useLang } from '~/utils/langs';
 import { lastFlippedString, ObjectiveGuild, ObjectiveIcon, ObjectiveName } from './Objectives';

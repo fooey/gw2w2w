@@ -1,6 +1,6 @@
 import { flatten } from 'lodash';
-import { WorldDictItem } from '~/queries/worlds';
-import { useMatch } from '~/queries/wvw-match';
+import { useMatch } from '~/queries';
+import type { WorldDictItem } from '~/queries/worlds';
 import { ApiMatch } from '~/types/api';
 import { Logs } from './Logs';
 import { Maps } from './Maps';

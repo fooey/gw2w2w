@@ -11,7 +11,7 @@ import {
   RiArrowRightUpFill,
   RiArrowUpFill,
 } from 'react-icons/ri';
-import { useWvwObjective } from '~/queries/wvw-objectives';
+import { useWvwObjective } from '~/queries';
 import { ApiLang, ApiMatchObjective, WvwObjectiveTypes } from '~/types/api';
 import { Direction } from './objectives-layout';
 
