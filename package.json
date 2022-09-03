@@ -6,11 +6,13 @@
   "scripts": {
     "start": "npm run dev",
     "dev": "vite --port 3000",
-    "publish": "npm run build:version && npm run build && npm run build:deploy",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "build:version": "node scripts/build.cjs && git commit -m \"update buildDate\" package.json && npm version patch && git push --follow-tags",
-    "build:deploy": "wrangler pages publish dist --project-name gw2w2w"
+    "preversion": "node scripts/build.cjs && git commit -m \"update buildDate\" package.json",
+    "version": "git push --follow-tags",
+    "postversion": "npm run publish",
+    "publish": "npm run build && npm run deploy",
+    "deploy": "wrangler pages publish dist --project-name gw2w2w"
   },
   "dependencies": {
     "@tanstack/query-sync-storage-persister": "^4.2.1",
