@@ -4,7 +4,7 @@ export type WvwTeams = 'red' | 'blue' | 'green' | 'neutral';
 export type WvwMaps = 'Center' | 'RedHome' | 'BlueHome' | 'GreenHome';
 export type WvwObjectiveTypes = 'Spawn' | 'Tower' | 'Camp' | 'Castle' | 'Mercenary' | 'Keep' | 'Ruins';
 
-export const teams: WvwTeams[] = ['red', 'blue', 'green'];
+export const teams: WvwTeams[] = ['red', 'green', 'blue'];
 export const regions: ApiRegions[] = ['1', '2'];
 
 export interface ApiWorld {
