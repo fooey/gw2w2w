@@ -1,8 +1,9 @@
 import classNames from 'classnames';
 import { chain, map } from 'lodash';
+import { DateTime, Duration } from 'luxon';
 import { ApiMatchMap, ApiMatchObjective, teams } from '~/types/api';
 import { useLang } from '~/utils/langs';
-import { DirectionIcon, lastFlippedString, ObjectiveGuild, ObjectiveIcon, ObjectiveName } from './Objectives';
+import { DirectionIcon, ObjectiveGuild, ObjectiveIcon, ObjectiveName } from './Objectives';
 import { LayoutObjective, objectivesLayout } from './objectives-layout';
 import { objectiveTypes, useNow } from './utils';
 
@@ -110,9 +111,6 @@ interface IMapObjectiveProps {
 }
 
 const MapObjective: React.FC<IMapObjectiveProps> = ({ mapObjective, layoutObjective }) => {
-  const now = useNow();
-  const lang = useLang();
-
   return (
     <div
       key={mapObjective.id}
@@ -130,10 +128,38 @@ const MapObjective: React.FC<IMapObjectiveProps> = ({ mapObjective, layoutObject
 
       <div className="flex flex-auto flex-row items-center justify-between gap-2">
         <ObjectiveName mapObjective={mapObjective} />
-        <div className="text-xs">
-          {mapObjective.last_flipped ? lastFlippedString(lang, mapObjective.last_flipped) : null}
+        <div className="w-9 text-xs">
+          {mapObjective.last_flipped ? <ImmunityCountdown timestamp={mapObjective.last_flipped} /> : null}
         </div>
       </div>
     </div>
   );
+};
+interface ITimestampRelativeProps {
+  timestamp: string;
+}
+export const ImmunityCountdown: React.FC<ITimestampRelativeProps> = ({ timestamp }) => {
+  const lang = useLang();
+  const now = useNow();
+
+  const dateTime = DateTime.fromISO(timestamp);
+  const expiration = dateTime.plus(Duration.fromObject({ minutes: 5 }));
+  const highlightDuration = Duration.fromObject({ seconds: 5 });
+  const maxDuration = Duration.fromObject({ minutes: 6 });
+
+  const remainingDuration = expiration.diff(now).shiftTo('seconds');
+  const secondsRemaining = remainingDuration.seconds;
+  const isVisible = secondsRemaining > -60;
+
+  return isVisible ? (
+    <div
+      className={classNames('w-9 origin-right bg-yellow-100 p-1 text-right leading-none transition-all duration-1000', {
+        'font-bold': secondsRemaining <= 30 || secondsRemaining > 270,
+        'opacity-50': secondsRemaining < 0,
+        'bg-red-100': secondsRemaining < 30 && secondsRemaining >= 0,
+      })}
+    >
+      {remainingDuration.seconds > 60 ? remainingDuration.toFormat('m:ss') : remainingDuration.toFormat('s')}
+    </div>
+  ) : null;
 };

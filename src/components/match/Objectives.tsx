@@ -92,21 +92,24 @@ export const ObjectiveName: React.FC<{ mapObjective: ApiMatchObjective }> = ({ m
   return <div className="text-sm">{objectiveQuery.data?.name}</div>;
 };
 
-const hourDuration = Duration.fromObject({ hours: 1 });
-const highlightDuration = Duration.fromObject({ seconds: 60 });
-
-export const TimestampRelative: React.FC<{ timestamp: string }> = ({ timestamp }) => {
+interface ITimestampRelativeProps {
+  timestamp: string;
+  maxDuration?: Duration | null;
+  highlightDuration?: Duration | null;
+}
+export const TimestampRelative: React.FC<ITimestampRelativeProps> = ({ timestamp, maxDuration, highlightDuration }) => {
   const lang = useLang();
   const now = useNow();
+
   const dateTime = DateTime.fromISO(timestamp);
-  const heldDuration = now.diff(dateTime).shiftTo('hours', 'minutes', 'seconds');
+  const elapsedDuration = now.diff(dateTime).shiftTo('hours', 'minutes', 'seconds');
+  const isHighlighted = highlightDuration && elapsedDuration < highlightDuration;
+  const isVisible = !maxDuration || elapsedDuration < maxDuration;
 
-  const highlight = heldDuration < highlightDuration;
-
-  return heldDuration < hourDuration ? (
+  return isVisible ? (
     <div
       className={classNames('p-1 transition-all duration-1000', {
-        'bg-yellow-100 font-bold': highlight,
+        'bg-yellow-100 font-bold': isHighlighted,
       })}
     >
       {dateTime.toRelative({
@@ -116,6 +119,11 @@ export const TimestampRelative: React.FC<{ timestamp: string }> = ({ timestamp }
       })}
     </div>
   ) : null;
+};
+
+TimestampRelative.defaultProps = {
+  maxDuration: Duration.fromObject({ hours: 1 }),
+  highlightDuration: Duration.fromObject({ minutes: 5 }),
 };
 
 const DirectionIconsMap: Record<Direction, IconType> = {

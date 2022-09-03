@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import { Reorder } from 'framer-motion';
 import { noop, sortBy } from 'lodash';
 import { DateTime } from 'luxon';
@@ -55,14 +56,19 @@ interface ILogItemProps {
   mapObjectiveEvent: ObjectiveEvent;
 }
 const LogItem: React.FC<ILogItemProps> = ({ mapObjectiveEvent }) => {
-  const lang = useLang();
   const { mapObjective, type, timestamp } = mapObjectiveEvent;
   const objectiveQuery = useWvwObjective(mapObjective.id);
 
   return (
-    <div className="flex h-10 flex-row items-center gap-1">
+    <div
+      className={classNames(`flex h-10 flex-row items-center gap-1`, {
+        'text-green-900': mapObjective.owner.toLowerCase() === 'green',
+        'text-red-900': mapObjective.owner.toLowerCase() === 'red',
+        'text-blue-900': mapObjective.owner.toLowerCase() === 'blue',
+      })}
+    >
       <div className="w-32 text-xs">
-        {DateTime.fromISO(timestamp).toLocal().toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS, { locale: lang })}
+        <Timestamp timestamp={timestamp} />
       </div>
       <div className="w-20 text-xs">{objectiveQuery.data?.map_type}</div>
       <div className="w-20 text-xs">{type}</div>
@@ -72,9 +78,17 @@ const LogItem: React.FC<ILogItemProps> = ({ mapObjectiveEvent }) => {
       <div className="flex flex-auto flex-row items-center justify-between gap-2">
         <ObjectiveName mapObjective={mapObjective} />
         <div className="text-xs">
-          <TimestampRelative timestamp={timestamp} />
+          <TimestampRelative timestamp={timestamp} highlightDuration={null} maxDuration={null} />
         </div>
       </div>
     </div>
+  );
+};
+
+const Timestamp: React.FC<{ timestamp: string }> = ({ timestamp }) => {
+  const lang = useLang();
+
+  return (
+    <>{DateTime.fromISO(timestamp).toLocal().toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS, { locale: lang })}</>
   );
 };

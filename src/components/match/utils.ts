@@ -12,7 +12,7 @@ export const useNow = () => {
   const [now, setNow] = useState<DateTime>(getNow());
 
   useEffect(() => {
-    const interval = setInterval(() => setNow(getNow()), 32);
+    const interval = setInterval(() => setNow(getNow()), 100);
     return () => clearInterval(interval);
   }, []);
 
