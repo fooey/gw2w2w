@@ -1,7 +1,7 @@
 {
   "name": "gw2w2w",
   "private": true,
-  "version": "2022.3.1",
+  "version": "2022.4.0",
   "type": "module",
   "scripts": {
     "start": "npm run dev",
@@ -50,5 +50,5 @@
     "vite": "^3.0.7",
     "wrangler": "^2.0.26"
   },
-  "buildDate": "2022-09-04T15:58:33.691-06:00"
+  "buildDate": "2022-08-30T18:48:18.404-04:00"
 }
