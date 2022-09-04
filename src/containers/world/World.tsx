@@ -1,5 +1,4 @@
 import { Navigate, useParams } from 'react-router-dom';
-import { Layout } from '~/components/layout/Layout';
 import { Match } from '~/components/match/Match';
 import { useWorldByName, useWorldMatchOverview } from '~/queries';
 import { useLang } from '~/utils/langs';
@@ -13,8 +12,8 @@ export const World = () => {
 
   if (!worldName) return <Navigate to="/" />;
 
-  if (isLoading || isLoadingMatchOverview) return <Layout>Loading...</Layout>;
-  if (!world) return <Layout>not found</Layout>;
+  if (isLoading || isLoadingMatchOverview) return <h1>Loading...</h1>;
+  if (!world) return <h1>not found</h1>;
 
   if (worldName !== world[lang])
     return (
@@ -26,11 +25,7 @@ export const World = () => {
       />
     );
 
-  return (
-    <Layout>
-      <Match world={world} matchId={matchOverview?.id} />
-    </Layout>
-  );
+  return <Match world={world} matchId={matchOverview?.id} />;
 };
 
 export default World;

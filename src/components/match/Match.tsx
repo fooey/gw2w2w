@@ -1,4 +1,5 @@
 import { flatten } from 'lodash';
+import React from 'react';
 import { useMatch } from '~/queries';
 import type { WorldDictItem } from '~/queries/worlds';
 import { ApiMatch } from '~/types/api';
@@ -11,9 +12,10 @@ interface IMatchProps {
   matchId?: ApiMatch['id'];
 }
 export const Match: React.FC<IMatchProps> = ({ world, matchId }) => {
-  const { isLoading, data: match } = useMatch(matchId);
-  if (isLoading) return <>Loading...</>;
-  if (!match) return <>err</>;
+  const { isFetched, data: match } = useMatch(matchId);
+
+  if (isFetched && !match) return <>err</>;
+  if (!match) return null;
 
   const objectives = flatten(match.maps.map((m) => m.objectives));
 

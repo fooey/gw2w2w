@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import { Dictionary, keyBy, keys } from 'lodash';
 import React from 'react';
-import { Layout } from '~/components/layout/Layout';
 import { WorldIdLink } from '~/components/WorldName';
 import { useMatchesOverview, useMatchesScores } from '~/queries';
 import { ApiMatchOverview, ApiMatchScores, regions, teams, WvwTeams } from '~/types/api';
@@ -9,13 +8,9 @@ import { useLang } from '~/utils/langs';
 
 export const MatchOverviewsContainer = () => {
   return (
-    <Layout>
-      <main className="flex-auto">
-        <section className="bg-neutral mx-auto flex w-fit flex-col gap-2 ">
-          <MatchOverviews />
-        </section>
-      </main>
-    </Layout>
+    <section className="bg-neutral mx-auto flex w-fit flex-col gap-2 ">
+      <MatchOverviews />
+    </section>
   );
 };
 
