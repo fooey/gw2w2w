@@ -34,8 +34,7 @@ export const GuildDialogTitle: React.FC<IGuildDialogTitleProps> = ({ mapObjectiv
           <div className="">[{data.tag}]</div>
         </div>
         <div className="text-xs">
-          {`Claimed: `}
-          {claimedAtDateTime.toRelative()}
+          {claimedAtDateTime.toRelative({ locale: lang })}
           {` @ `}
           {claimedAtDateTime.toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS, { locale: lang })}
         </div>

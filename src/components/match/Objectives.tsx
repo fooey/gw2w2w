@@ -29,9 +29,9 @@ import { useLang } from '~/utils/langs';
 import { GuildDialogBody, GuildDialogTitle } from './GuildDialog';
 import { useNow } from './utils';
 
-type SVGComponent = React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+export type SVGComponent = React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
 
-const ObjectiveIconsMap: Record<WvwObjectiveTypes, SVGComponent> = {
+export const ObjectiveIconsMap: Record<WvwObjectiveTypes, SVGComponent> = {
   Castle: CastleSVG,
   Keep: KeepSVG,
   Tower: TowerSVG,

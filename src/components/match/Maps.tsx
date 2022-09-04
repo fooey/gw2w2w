@@ -13,9 +13,10 @@ export interface IMapProps {
 export const Maps: React.FC<IMapProps> = ({ maps }) => {
   return (
     <div className={`grid grid-cols-1 gap-4  px-4 md:grid-cols-4`}>
-      {maps.map((matchMap) => (
-        <MatchMap key={matchMap.id} matchMap={matchMap} />
-      ))}
+      {['Center', 'RedHome', 'GreenHome', 'BlueHome'].map((mapType) => {
+        const matchMap = maps.find((m) => m.type === mapType);
+        return matchMap ? <MatchMap key={matchMap.id} matchMap={matchMap} /> : null;
+      })}
     </div>
   );
 };

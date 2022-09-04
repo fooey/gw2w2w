@@ -13,14 +13,9 @@ export const useWvwObjectives = () => {
 
 export const useWvwObjective = (objectiveId?: string) => {
   const objectivesQuery = useWvwObjectives();
-  let data: ApiWvwObjective | undefined;
-
-  if (objectivesQuery.data) {
-    data = find(objectivesQuery.data, { id: objectiveId });
-  }
 
   return {
     ...objectivesQuery,
-    data,
+    data: find(objectivesQuery.data, { id: objectiveId }),
   };
 };
