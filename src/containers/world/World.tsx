@@ -32,3 +32,5 @@ export const World = () => {
     </Layout>
   );
 };
+
+export default World;

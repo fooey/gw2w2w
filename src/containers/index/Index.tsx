@@ -19,6 +19,8 @@ export const MatchOverviewsContainer = () => {
   );
 };
 
+export default MatchOverviewsContainer;
+
 const MatchOverviews: React.FC = () => {
   const { isLoading: overviewIsLoading, error: overviewError, data: overviewData } = useMatchesOverview();
   const { isLoading: scoresIsLoading, error: scoresError, data: scoresData } = useMatchesScores();
