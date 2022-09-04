@@ -85,7 +85,7 @@ const LogItem: React.FC<ILogItemProps> = ({ mapObjectiveEvent }) => {
   );
 };
 
-const Timestamp: React.FC<{ timestamp: string }> = ({ timestamp }) => {
+export const Timestamp: React.FC<{ timestamp: string }> = ({ timestamp }) => {
   const lang = useLang();
 
   return (

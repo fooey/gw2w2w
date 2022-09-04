@@ -15,13 +15,18 @@ import { useWvwObjective } from '~/queries';
 import { ApiMatchObjective, WvwObjectiveTypes } from '~/types/api';
 import { Direction } from './objectives-layout';
 
+import { QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import { MdShield } from 'react-icons/md';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 import { ReactComponent as CampSVG } from '~/icons/camp.svg';
 import { ReactComponent as CastleSVG } from '~/icons/castle.svg';
 import { ReactComponent as KeepSVG } from '~/icons/keep.svg';
 import { ReactComponent as TowerSVG } from '~/icons/tower.svg';
+import { queryClient } from '~/queries/query-client';
 import { useLang } from '~/utils/langs';
+import { GuildDialogBody, GuildDialogTitle } from './GuildDialog';
 import { useNow } from './utils';
 
 type SVGComponent = React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
@@ -72,15 +77,44 @@ export const ObjectiveIcon: React.FC<{ mapObjective: ApiMatchObjective }> = ({ m
 //     </div>
 //   );
 // };
+import { BrowserRouter } from 'react-router-dom';
 
 export const ObjectiveGuild: React.FC<{ mapObjective: ApiMatchObjective }> = ({ mapObjective }) => {
+  const lang = useLang();
   const guildUrl = `https://guilds.gw2w2w.com/short/${mapObjective.claimed_by}`;
   const emblemUrl = `${guildUrl}.svg`;
+  const guildSWAL = withReactContent(Swal);
+
+  const openGuildDialog = () => {
+    if (mapObjective.claimed_by !== undefined && mapObjective.claimed_at !== undefined) {
+      const guildObjective = {
+        claimed_by: mapObjective.claimed_by,
+        claimed_at: mapObjective.claimed_at,
+        guild_upgrades: mapObjective.guild_upgrades ?? [],
+      };
+
+      guildSWAL.fire({
+        title: (
+          <QueryClientProvider client={queryClient}>
+            <GuildDialogTitle mapObjective={guildObjective} lang={lang} />
+          </QueryClientProvider>
+        ),
+        html: (
+          <BrowserRouter>
+            <QueryClientProvider client={queryClient}>
+              <GuildDialogBody mapObjective={guildObjective} lang={lang} />
+            </QueryClientProvider>
+          </BrowserRouter>
+        ),
+        showCloseButton: true,
+      });
+    }
+  };
 
   return (
     <div className="w-6">
       {mapObjective.claimed_by ? (
-        <a href={guildUrl} target="_blank" className={`relative block`}>
+        <a onClick={openGuildDialog} className={`relative block cursor-help`}>
           <img src={emblemUrl} className="h-6 w-6" />
           {mapObjective.guild_upgrades && mapObjective.guild_upgrades.length ? (
             <>
