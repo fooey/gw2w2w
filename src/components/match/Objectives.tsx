@@ -5,6 +5,7 @@ import { GiConvergenceTarget } from 'react-icons/gi';
 import {
   RiArrowDownFill,
   RiArrowLeftDownFill,
+  RiArrowLeftFill,
   RiArrowLeftUpFill,
   RiArrowRightDownFill,
   RiArrowRightFill,
@@ -175,7 +176,7 @@ const DirectionIconsMap: Record<Direction, IconType> = {
   C: GiConvergenceTarget,
   N: RiArrowUpFill,
   E: RiArrowRightFill,
-  W: RiArrowRightFill,
+  W: RiArrowLeftFill,
   S: RiArrowDownFill,
   NW: RiArrowLeftUpFill,
   NE: RiArrowRightUpFill,
